@@ -48,7 +48,7 @@ ifeq ($(REMOTE_PROTO),ftp)
 		--user $(REMOTE_USER):$(REMOTE_PASSWORD)
 else
 	ssh $(REMOTE_USER)@$(REMOTE_HOST) \
-		'mysqldump --user=$(REMOTE_DB_USER) --password=$(REMOTE_DB_PASSWORD) $(REMOTE_DB_NAME) | xz > /tmp/$(REMOTE_DB_NAME).sql.xz'
+		'mysqldump --host=$(REMOTE_DB_HOST) --user=$(REMOTE_DB_USER) --password=$(REMOTE_DB_PASSWORD) $(REMOTE_DB_NAME) | xz > /tmp/$(REMOTE_DB_NAME).sql.xz'
 	scp $(REMOTE_USER)@$(REMOTE_HOST):/tmp/$(REMOTE_DB_NAME).sql.xz /tmp/
 	$(eval tmp_file := /tmp/$(REMOTE_DB_NAME).sql)
 	-rm $(tmp_file)
@@ -96,7 +96,7 @@ else
 	xz $(tmp_file)
 	scp $(tmp_file).xz $(REMOTE_USER)@$(REMOTE_HOST):/tmp/
 	ssh $(REMOTE_USER)@$(REMOTE_HOST) \
-		'xzcat /tmp/$(tmp_basename).xz | mysql --user=$(REMOTE_DB_USER) --password=$(REMOTE_DB_PASSWORD) $(REMOTE_DB_NAME)'
+		'xzcat /tmp/$(tmp_basename).xz | mysql --host=$(REMOTE_DB_HOST) --user=$(REMOTE_DB_USER) --password=$(REMOTE_DB_PASSWORD) $(REMOTE_DB_NAME)'
 	-rm $(tmp_file).xz
 endif
 	-rm $(tmp_file)
