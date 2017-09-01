@@ -1,6 +1,6 @@
 SHELL = /bin/sh
 
-.PHONY: import-db
+.PHONY: db-dump db-export db-import db-load export-db import-db
 
 REMOTE_PROTO := $($(REMOTE)_proto)
 REMOTE_HOST := $($(REMOTE)_$(REMOTE_PROTO)_host)
@@ -16,56 +16,89 @@ endif
 REMOTE_DB_USER := $($(REMOTE)_db_user)
 REMOTE_DB_PASSWORD := $($(REMOTE)_db_password)
 
+# Файл дампа БД.
+db_dump_file := db/databse.sql
+
 ##
-# Проверяет что указанные переменные установлены и их значения не пусты.
-# В случае ошибки прерывает работу сценария.
-#
-# @param Имя переменной для проверки.
-# @param Сообщение при ошибке (опционально).
-#
+## Проверяет что указанные переменные установлены и их значения не пусты.
+## В случае ошибки прерывает работу сценария.
+##
+## @param Имя переменной для проверки.
+## @param Сообщение при ошибке (опционально).
+##
 assert_variable_set = $(strip $(foreach 1,$1, \
         $(call __assert_variable_set,$1,$(strip $(value 2)))))
 
 __assert_variable_set = $(if $(value $1),,$(error Undefined variable $1$(if $2, ($2))))
 
 ##
-# Импортирует БД с удалённого сервера на локальный.
-#
-import-db:
+## Сохраняет дамп БД в db/database.sql
+##
+db-dump:
 	$(call assert_variable_set, REMOTE, имя конфигурации сайта)
-	$(call assert_variable_set, LOCAL_DB_NAME, имя локальной БД)
 	$(if $(REMOTE_HOST),,$(error Undefined variable $(REMOTE)_$(REMOTE_PROTO)_host))
 ifeq ($(REMOTE_PROTO),ftp)
 	$(if $(REMOTE_ROOT),,$(error Undefined variable $(REMOTE)_$(REMOTE_PROTO)_root))
 	$(if $(REMOTE_USER),,$(error Undefined variable $(REMOTE)_$(REMOTE_PROTO)_user))
 	$(if $(REMOTE_PASSWORD),,$(error Undefined variable $(REMOTE)_$(REMOTE_PROTO)_password))
-	$(eval tmp_file := $(shell mktemp --tmpdir import-db.XXXX))
 	curl --upload-file ../.dev-tools/mysqldump.php ftp://$(REMOTE_HOST)$(REMOTE_ROOT) \
 		--user $(REMOTE_USER):$(REMOTE_PASSWORD)
 	curl --data 'user=$(prod_db_user)&password=$(prod_db_password)&db=$(prod_db_name)&host=$(prod_db_host)' \
-		$(prod_http_root)/mysqldump.php > $(tmp_file)
+		$(prod_http_root)/mysqldump.php > $(db_dump_file)
 	-curl ftp://$(REMOTE_HOST)$(REMOTE_ROOT) --request 'DELE mysqldump.php' \
 		--user $(REMOTE_USER):$(REMOTE_PASSWORD)
 else
 	ssh $(REMOTE_USER)@$(REMOTE_HOST) \
 		'mysqldump --host=$(REMOTE_DB_HOST) --user=$(REMOTE_DB_USER) --password=$(REMOTE_DB_PASSWORD) $(REMOTE_DB_NAME) | xz > /tmp/$(REMOTE_DB_NAME).sql.xz'
-	scp $(REMOTE_USER)@$(REMOTE_HOST):/tmp/$(REMOTE_DB_NAME).sql.xz /tmp/
-	$(eval tmp_file := /tmp/$(REMOTE_DB_NAME).sql)
-	-rm $(tmp_file)
-	xz -d /tmp/$(REMOTE_DB_NAME).sql.xz
+	-rm $(db_dump_file).xz
+	scp $(REMOTE_USER)@$(REMOTE_HOST):/tmp/$(REMOTE_DB_NAME).sql.xz $(db_dump_file).xz
+	-rm $(db_dump_file)
+	xz -d $(db_dump_file).xz
 endif
-ifdef LOCAL_DB_USER
-	mysql --user=$(LOCAL_DB_USER) --password=$(LOCAL_DB_PASSWORD) $(LOCAL_DB_NAME) < $(tmp_file)
-else
-	mysql $(LOCAL_DB_NAME) < $(tmp_file)
-endif
-	-rm $(tmp_file)
 
 ##
-# Экспортирует БД с локального сервера на удалённый.
-#
-# ВНИМАНИЕ! Во избежание потери данных, экспорт на боевой сайт не поддерживается!
-#
+## Загружает дамп из db/database.sql в удалённую БД.
+##
+## ВНИМАНИЕ! Во избежание потери данных, загрузка на боевой сайт не поддерживается!
+##
+db-load:
+	$(call assert_variable_set, REMOTE, имя конфигурации сайта)
+ifeq ($(REMOTE),prod)
+	$(error Запись в боевую базу данных запрещена!)
+endif
+	$(if $(REMOTE_HOST),,$(error Undefined variable $(REMOTE)_$(REMOTE_PROTO)_host))
+ifeq ($(REMOTE_PROTO),ftp)
+	$(error Загрузка по FTP пока не поддерживается!)
+else
+	# FIXME
+	xz $(tmp_file)
+#	scp $(tmp_file).xz $(REMOTE_USER)@$(REMOTE_HOST):/tmp/
+#	ssh $(REMOTE_USER)@$(REMOTE_HOST) \
+#		'xzcat /tmp/$(tmp_basename).xz | mysql --host=$(REMOTE_DB_HOST) --user=$(REMOTE_DB_USER) --password=$(REMOTE_DB_PASSWORD) $(REMOTE_DB_NAME)'
+#	-rm $(tmp_file).xz
+endif
+
+##
+## Импортирует БД с удалённого сервера на локальный.
+##
+db-import: import-db
+
+## @deprecated
+import-db: db-dump
+ifdef LOCAL_DB_USER
+	mysql --user=$(LOCAL_DB_USER) --password=$(LOCAL_DB_PASSWORD) $(LOCAL_DB_NAME) < $(db_dump_file)
+else
+	mysql $(LOCAL_DB_NAME) < $(db_dump_file)
+endif
+
+##
+## Экспортирует БД с локального сервера на удалённый.
+##
+## ВНИМАНИЕ! Во избежание потери данных, экспорт на боевой сайт не поддерживается!
+##
+db-export: export-db
+
+## @deprecated
 export-db:
 	$(call assert_variable_set, REMOTE, имя конфигурации сайта)
 ifeq ($(REMOTE),prod)
