@@ -20,6 +20,22 @@ REMOTE_DB_PASSWORD := $($(REMOTE)_db_password)
 db_dump_file := db/databse.sql
 
 ##
+## Команды запуска различных инструментов.
+##
+
+## OptiPNG.
+optipng-bin := node_modules/.bin/optipng
+## UglifyJS.
+uglifyjs-bin := node_modules/.bin/uglifyjs
+
+##
+## Сжимает указанный файл JavaScript.
+##
+define uglifyjs =
+	$(uglifyjs-bin) $^ -o $@
+endef
+
+##
 ## Проверяет что указанные переменные установлены и их значения не пусты.
 ## В случае ошибки прерывает работу сценария.
 ##
@@ -133,3 +149,27 @@ else
 	-rm $(tmp_file).xz
 endif
 	-rm $(tmp_file)
+
+##
+## Устанавливает пакеты NodeJS.
+##
+node_modules: package.json
+	npm install
+
+##
+## Сообщает об ошибке, если файла package.json нет.
+##
+package.json:
+	$(error Файл "package.json" отсутствует. Он должен создаваться вручуню.)
+
+##
+## Устанавливает OptiPNG.
+##
+$(optipng-bin): node_modules
+	npm install optipng-bin --save-dev
+
+##
+## Устанавливает UglifyJS.
+##
+$(uglifyjs-bin): node_modules
+	npm install uglify-js --save-dev
