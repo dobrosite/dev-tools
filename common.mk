@@ -14,6 +14,9 @@ endif
 REMOTE_DB_USER := $($(REMOTE)_db_user)
 REMOTE_DB_PASSWORD := $($(REMOTE)_db_password)
 
+LOCAL_DB_USER ?= user
+LOCAL_DB_PASSWORD ?= password
+
 ## Файл дампа БД.
 DB_DUMP_FILE := db/databse.sql
 
@@ -49,17 +52,14 @@ run-uglifyjs = $(uglifyjs-bin) $(1) -o $(2)
 ## @param Имя переменной для проверки.
 ## @param Сообщение при ошибке (опционально).
 ##
-assert_variable_set = $(strip $(foreach 1,$1, \
-        $(call __assert_variable_set,$1,$(strip $(value 2)))))
-
-__assert_variable_set = $(if $(value $1),,$(error Undefined variable $1$(if $2, ($2))))
+assert-variable-set = $(if $(value $1),,$(error Отсутствует переменная $1$(if $2, ($2))))
 
 ##
 ## Сохраняет дамп БД в db/database.sql
 ##
 .PHONY: db-dump
 db-dump:
-	$(call assert_variable_set, REMOTE, имя конфигурации сайта)
+	$(call assert-variable-set,REMOTE,имя конфигурации сайта)
 	$(if $(REMOTE_HOST),,$(error Undefined variable $(REMOTE)_$(REMOTE_PROTO)_host))
 ifeq ($(REMOTE_PROTO),ftp)
 	$(if $(REMOTE_ROOT),,$(error Undefined variable $(REMOTE)_$(REMOTE_PROTO)_root))
@@ -87,7 +87,7 @@ endif
 ##
 .PHONY: db-load
 db-load:
-	$(call assert_variable_set, REMOTE, имя конфигурации сайта)
+	$(call assert-variable-set,REMOTE,имя конфигурации сайта)
 ifeq ($(REMOTE),prod)
 	$(error Запись в боевую базу данных запрещена!)
 endif
@@ -108,11 +108,8 @@ endif
 ##
 .PHONY: db-import
 db-import: db-dump
-ifdef LOCAL_DB_USER
+	$(call assert-variable-set,LOCAL_DB_NAME,имя локальной БД)
 	mysql --user=$(LOCAL_DB_USER) --password=$(LOCAL_DB_PASSWORD) $(LOCAL_DB_NAME) < $(DB_DUMP_FILE)
-else
-	mysql $(LOCAL_DB_NAME) < $(DB_DUMP_FILE)
-endif
 
 ##
 ## Экспортирует БД с локального сервера на удалённый.
@@ -121,19 +118,15 @@ endif
 ##
 .PHONY: db-export
 db-export:
-	$(call assert_variable_set, REMOTE, имя конфигурации сайта)
+	$(call assert-variable-set,REMOTE,имя конфигурации сайта)
 ifeq ($(REMOTE),prod)
 	$(error Export to production server is prohibited!)
 endif
-	$(call assert_variable_set, LOCAL_DB_NAME, имя локальной БД)
+	$(call assert-variable-set,LOCAL_DB_NAME,имя локальной БД)
 	$(if $(REMOTE_HOST),,$(error Undefined variable $(REMOTE)_$(REMOTE_PROTO)_host))
 	$(eval tmp_file := $(shell mktemp --tmpdir export-db.XXXX))
 	$(eval tmp_basename := $(shell basename $(tmp_file)))
-ifdef LOCAL_DB_USER
 	mysqldump --user=$(LOCAL_DB_USER) --password=$(LOCAL_DB_PASSWORD) $(LOCAL_DB_NAME) > $(tmp_file)
-else
-	mysqldump $(LOCAL_DB_NAME) > $(tmp_file)
-endif
 ifeq ($(REMOTE_PROTO),ftp)
 	$(error Export over FTP is not supported yet!)
 	$(if $(REMOTE_ROOT),,$(error Undefined variable $(REMOTE)_$(REMOTE_PROTO)_root))
