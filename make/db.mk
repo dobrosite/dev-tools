@@ -1,70 +1,60 @@
-SHELL = /bin/sh
+##
+## Работа с базами данных
+##
 
-REMOTE_PROTO := $($(REMOTE)_proto)
-REMOTE_HOST := $($(REMOTE)_$(REMOTE_PROTO)_host)
-REMOTE_USER := $($(REMOTE)_$(REMOTE_PROTO)_user)
-REMOTE_PASSWORD := $($(REMOTE)_$(REMOTE_PROTO)_password)
-REMOTE_ROOT := $($(REMOTE)_$(REMOTE_PROTO)_root)
+__DB_MK := 1
+__LIB_DIR ?= $(dir $(realpath $(lastword $(MAKEFILE_LIST))))
 
-REMOTE_DB_NAME := $($(REMOTE)_db_name)
+ifndef __COMMON_MK
+include $(__LIB_DIR)/common.mk
+endif
+
+ifndef __REMOTE_MK
+include $(__LIB_DIR)/remote.mk
+endif
+
+## Хост удалённого СУБД (по умолчанию localhost).
 REMOTE_DB_HOST := $($(REMOTE)_db_host)
 ifeq ($(REMOTE_DB_HOST),)
 REMOTE_DB_HOST := localhost
 endif
+## Пользователь СУБД.
 REMOTE_DB_USER := $($(REMOTE)_db_user)
+## Пароль.
 REMOTE_DB_PASSWORD := $($(REMOTE)_db_password)
+## Имя удалённой БД.
+REMOTE_DB_NAME := $($(REMOTE)_db_name)
 
+## Локальный пользователь и его пароль.
 LOCAL_DB_USER ?= user
 LOCAL_DB_PASSWORD ?= password
 
 ## Файл дампа БД.
 DB_DUMP_FILE := db/database.sql
 
-## OptiPNG.
-optipng-bin := node_modules/.bin/optipng
-## Sass.
-sass-bin := node_modules/.bin/node-sass
-## UglifyJS.
-uglifyjs-bin := node_modules/.bin/uglifyjs
+####
+## Выполняет команду с локальным СУБД MySQL.
+##
+run-mysql-local = mysql --user=$(LOCAL_DB_USER) --password=$(LOCAL_DB_PASSWORD) $(1)
 
 ####
-## Сжимает PNG.
+## Выполняет mysqldump на удалённом сервере
 ##
-run-optipng = $(optipng-bin) -o7 $(1)
-
-####
-## Собирает SCSS.
+## @param $1 Имя базы данных
 ##
-run-sass = $(sass-bin) --output-style=compressed --output $(2) $(1)
-
-####
-## Сжимает указанный файл JavaScript.
-##
-## @param $1 Исходный файл или файлы (через пробел).
-## @param $2 Итоговоый файл.
-##
-run-uglifyjs = $(uglifyjs-bin) $(1) -o $(2)
-
-##
-## Проверяет что указанные переменные установлены и их значения не пусты.
-## В случае ошибки прерывает работу сценария.
-##
-## @param Имя переменной для проверки.
-## @param Сообщение при ошибке (опционально).
-##
-assert-variable-set = $(if $(value $1),,$(error Отсутствует переменная $1$(if $2, ($2))))
+run-mysqldump-remote = mysqldump --host=$(REMOTE_DB_HOST) --user=$(REMOTE_DB_USER) --password=$(REMOTE_DB_PASSWORD) $(1)
 
 ##
 ## Сохраняет дамп БД в db/database.sql
 ##
 .PHONY: db-dump
 db-dump:
-	$(call assert-variable-set,REMOTE,имя конфигурации сайта)
-	$(if $(REMOTE_HOST),,$(error Undefined variable $(REMOTE)_$(REMOTE_PROTO)_host))
+	$(assert-required-remote-variables)
 ifeq ($(REMOTE_PROTO),ftp)
-	$(if $(REMOTE_ROOT),,$(error Undefined variable $(REMOTE)_$(REMOTE_PROTO)_root))
-	$(if $(REMOTE_USER),,$(error Undefined variable $(REMOTE)_$(REMOTE_PROTO)_user))
-	$(if $(REMOTE_PASSWORD),,$(error Undefined variable $(REMOTE)_$(REMOTE_PROTO)_password))
+	$(error Эта возможность ещё не доделана)
+	$(if $(REMOTE_ROOT),,$(error Не задана переменная $(REMOTE)_$(REMOTE_PROTO)_root))
+	$(if $(REMOTE_USER),,$(error Не задана переменная $(REMOTE)_$(REMOTE_PROTO)_user))
+	$(if $(REMOTE_PASSWORD),,$(error Не задана переменная $(REMOTE)_$(REMOTE_PROTO)_password))
 	ftp -inpu ftp://$(subst @,%40,$(REMOTE_USER)):$(REMOTE_PASSWORD)@$(REMOTE_HOST)$(REMOTE_ROOT)/mysqldump.php \
 		$(realpath ../.dev-tools/mysqldump.php)
 	curl --data 'user=$(prod_db_user)&password=$(prod_db_password)&db=$(prod_db_name)&host=$(prod_db_host)' \
@@ -72,8 +62,7 @@ ifeq ($(REMOTE_PROTO),ftp)
 	-curl ftp://$(REMOTE_HOST)$(REMOTE_ROOT) --request 'DELE mysqldump.php' \
 		--user $(REMOTE_USER):$(REMOTE_PASSWORD)
 else
-	ssh $(REMOTE_USER)@$(REMOTE_HOST) \
-		'mysqldump --host=$(REMOTE_DB_HOST) --user=$(REMOTE_DB_USER) --password=$(REMOTE_DB_PASSWORD) $(REMOTE_DB_NAME) | xz > /tmp/$(REMOTE_DB_NAME).sql.xz'
+	$(call run-ssh,$(run-mysqldump-remote) $(REMOTE_DB_NAME) | xz > /tmp/$(REMOTE_DB_NAME).sql.xz)
 	-rm $(DB_DUMP_FILE).xz
 	scp $(REMOTE_USER)@$(REMOTE_HOST):/tmp/$(REMOTE_DB_NAME).sql.xz $(DB_DUMP_FILE).xz
 	-rm $(DB_DUMP_FILE)
@@ -87,6 +76,7 @@ endif
 ##
 .PHONY: db-load
 db-load:
+	$(error Эта возможность ещё не доделана)
 	$(call assert-variable-set,REMOTE,имя конфигурации сайта)
 ifeq ($(REMOTE),prod)
 	$(error Запись в боевую базу данных запрещена!)
@@ -107,9 +97,11 @@ endif
 ## Импортирует БД с удалённого сервера на локальный.
 ##
 .PHONY: db-import
+db-import: DB_DUMP_FILE := $(shell mktemp dev-tools-dump-XXXX.sql)
 db-import: db-dump
 	$(call assert-variable-set,LOCAL_DB_NAME,имя локальной БД)
-	mysql --user=$(LOCAL_DB_USER) --password=$(LOCAL_DB_PASSWORD) $(LOCAL_DB_NAME) < $(DB_DUMP_FILE)
+	$(call run-mysql-local,$(LOCAL_DB_NAME) < $(DB_DUMP_FILE))
+	-rm $(DB_DUMP_FILE)
 
 ##
 ## Экспортирует БД с локального сервера на удалённый.
@@ -118,6 +110,7 @@ db-import: db-dump
 ##
 .PHONY: db-export
 db-export:
+	$(error Эта возможность ещё не доделана)
 	$(call assert-variable-set,REMOTE,имя конфигурации сайта)
 ifeq ($(REMOTE),prod)
 	$(error Export to production server is prohibited!)
@@ -147,39 +140,3 @@ else
 	-rm $(tmp_file).xz
 endif
 	-rm $(tmp_file)
-
-##
-## Устанавливает пакеты NodeJS.
-##
-node_modules: package.json
-	npm install
-
-##
-## Сообщает об ошибке, если файла package.json нет.
-##
-package.json:
-	$(error Файл "package.json" отсутствует. Он должен создаваться вручуню.)
-
-##
-## Устанавливает SASS.
-##
-$(sass-bin): package.json
-ifeq (,$(realpath $(sass-bin)))
-	npm install node-sass --save-dev
-endif
-
-##
-## Устанавливает OptiPNG.
-##
-$(optipng-bin): package.json
-ifeq (,$(realpath $(optipng-bin)))
-	npm install optipng-bin --save-dev
-endif
-
-##
-## Устанавливает UglifyJS.
-##
-$(uglifyjs-bin): package.json
-ifeq (,$(realpath $(uglifyjs-bin)))
-	npm install uglify-js --save-dev
-endif
