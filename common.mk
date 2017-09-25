@@ -18,7 +18,7 @@ LOCAL_DB_USER ?= user
 LOCAL_DB_PASSWORD ?= password
 
 ## Файл дампа БД.
-DB_DUMP_FILE := db/databse.sql
+DB_DUMP_FILE := db/database.sql
 
 ## OptiPNG.
 optipng-bin := node_modules/.bin/optipng
