@@ -35,7 +35,7 @@ run-jpegoptim = $(jpegoptim) --preserve-perms --strip-all --threshold=1% $(1)
 ##
 ## @param $1 Имя файла или маска (например *.png).
 ##
-run-optipng = $(optipng-bin) -o7 $(1)
+run-optipng = $(optipng) -o7 $(1)
 
 ####
 ## Собирает SCSS.
@@ -43,7 +43,7 @@ run-optipng = $(optipng-bin) -o7 $(1)
 ## @param $1 Исходный файл.
 ## @param $2 Итоговый файл.
 ##
-run-sass = $(sass-bin) --output-style=compressed --output $(2) $(1)
+run-sass = $(sass) --output-style=compressed --output $(2) $(1)
 
 ####
 ## Сжимает указанный файл JavaScript.
@@ -51,7 +51,7 @@ run-sass = $(sass-bin) --output-style=compressed --output $(2) $(1)
 ## @param $1 Исходный файл или файлы (через пробел).
 ## @param $2 Итоговый файл.
 ##
-run-uglifyjs = $(uglifyjs-bin) $(1) -o $(2)
+run-uglifyjs = $(uglifyjs) $(1) -o $(2)
 
 ##
 ## Устанавливает пакеты NodeJS.
@@ -76,23 +76,23 @@ endif
 ##
 ## Устанавливает SASS.
 ##
-$(sass-bin): package.json
-ifeq (,$(realpath $(sass-bin)))
+$(sass): package.json
+ifeq (,$(realpath $(sass)))
 	npm install node-sass --save-dev
 endif
 
 ##
 ## Устанавливает OptiPNG.
 ##
-$(optipng-bin): package.json
-ifeq (,$(realpath $(optipng-bin)))
+$(optipng): package.json
+ifeq (,$(realpath $(optipng)))
 	npm install optipng-bin --save-dev
 endif
 
 ##
 ## Устанавливает UglifyJS.
 ##
-$(uglifyjs-bin): package.json
-ifeq (,$(realpath $(uglifyjs-bin)))
+$(uglifyjs): package.json
+ifeq (,$(realpath $(uglifyjs)))
 	npm install uglify-js --save-dev
 endif
