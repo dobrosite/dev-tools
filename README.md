@@ -20,7 +20,7 @@
 ```makefile
 all: build
 
-include tools/dev-tools/common.mk
+include tools/dev-tools/make/common.mk
 ```
 Желательно подключать библиотеки как можно ближе к началу файла, но после цели по умолчанию (иначе
 целью по умолчанию может стать цель из библиотеки).
