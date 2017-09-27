@@ -5,15 +5,13 @@
 __COMMON_MK := 1
 __LIB_DIR ?= $(dir $(realpath $(lastword $(MAKEFILE_LIST))))
 
-SHELL := /bin/bash
+SHELL ?= /bin/bash
 
-# Задаёт переменную TMPDIR, если она не задана.
-ifneq (TMPDIR,)
-TMPDIR := /tmp
-endif
+# Задаёт переменную TMPDIR, если она не задана в системе или аргументах make.
+TMPDIR ?= /tmp
 
 ## Путь к папке, содержащей composer.json.
-COMPOSER_ROOT := .
+COMPOSER_ROOT ?= .
 
 ## Путь к jpegoptim.
 jpegoptim := node_modules/.bin/jpegoptim
