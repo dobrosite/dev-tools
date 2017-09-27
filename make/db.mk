@@ -97,9 +97,10 @@ endif
 ## Импортирует БД с удалённого сервера на локальный.
 ##
 .PHONY: db-import
-db-import: DB_DUMP_FILE := $(shell mktemp dev-tools-dump-XXXX.sql)
-db-import: db-dump
+db-import: DB_DUMP_FILE := $(shell mktemp --tmpdir dev-tools-dump-XXXX.sql)
+db-import:
 	$(call assert-variable-set,LOCAL_DB_NAME,имя локальной БД)
+	$(MAKE) db-dump
 	$(call run-mysql-local,$(LOCAL_DB_NAME) < $(DB_DUMP_FILE))
 	-rm $(DB_DUMP_FILE)
 
