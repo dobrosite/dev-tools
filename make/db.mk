@@ -100,7 +100,7 @@ endif
 db-import: DB_DUMP_FILE := $(shell mktemp --tmpdir dev-tools-dump-XXXX.sql)
 db-import:
 	$(call assert-variable-set,LOCAL_DB_NAME,имя локальной БД)
-	$(MAKE) db-dump
+	$(MAKE) db-dump DB_DUMP_FILE=$(DB_DUMP_FILE)
 	$(call run-mysql-local,$(LOCAL_DB_NAME) < $(DB_DUMP_FILE))
 	-rm $(DB_DUMP_FILE)
 
