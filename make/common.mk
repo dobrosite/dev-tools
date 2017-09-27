@@ -5,7 +5,7 @@
 __COMMON_MK := 1
 __LIB_DIR ?= $(dir $(realpath $(lastword $(MAKEFILE_LIST))))
 
-ifneq TMPDIR
+ifneq (TMPDIR,)
 TMPDIR := /tmp
 endif
 
