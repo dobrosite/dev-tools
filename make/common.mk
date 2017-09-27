@@ -5,6 +5,10 @@
 __COMMON_MK := 1
 __LIB_DIR ?= $(dir $(realpath $(lastword $(MAKEFILE_LIST))))
 
+ifneq TMPDIR
+TMPDIR := /tmp
+endif
+
 ## Путь к jpegoptim.
 jpegoptim := node_modules/.bin/jpegoptim
 ## Путь к OptiPNG.
