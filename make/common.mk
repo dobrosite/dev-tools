@@ -5,9 +5,15 @@
 __COMMON_MK := 1
 __LIB_DIR ?= $(dir $(realpath $(lastword $(MAKEFILE_LIST))))
 
+SHELL := /bin/bash
+
+# Задаёт переменную TMPDIR, если она не задана.
 ifneq (TMPDIR,)
 TMPDIR := /tmp
 endif
+
+## Путь к папке, содержащей composer.json.
+COMPOSER_ROOT := .
 
 ## Путь к jpegoptim.
 jpegoptim := node_modules/.bin/jpegoptim
@@ -56,6 +62,20 @@ run-sass = $(sass) --output-style=compressed --output $(2) $(1)
 ## @param $2 Итоговый файл.
 ##
 run-uglifyjs = $(uglifyjs) $(1) -o $(2)
+
+##
+## Устанавливает зависимости через Composer.
+##
+.PHONY: composer-install
+composer-install:
+	cd $(COMPOSER_ROOT) && composer install --no-interaction
+
+##
+## Обновляет зависимости через Composer.
+##
+.PHONY: composer-update
+composer-update:
+	cd $(COMPOSER_ROOT) && composer update --no-interaction
 
 ##
 ## Устанавливает пакеты NodeJS.
