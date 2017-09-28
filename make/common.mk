@@ -79,7 +79,9 @@ composer-update:
 ## Устанавливает пакеты NodeJS.
 ##
 node_modules: package.json
+ifeq ($(realpath node_modules),)
 	npm install
+endif
 
 ##
 ## Сообщает об ошибке, если файла package.json нет.
@@ -90,7 +92,7 @@ package.json:
 ##
 ## Устанавливает jpegoptim.
 ##
-$(jpegoptim): package.json
+$(jpegoptim): node_modules
 ifeq (,$(realpath $(jpegoptim)))
 	npm install jpegoptim-bin --save-dev
 endif
@@ -98,7 +100,7 @@ endif
 ##
 ## Устанавливает SASS.
 ##
-$(sass): package.json
+$(sass): node_modules
 ifeq (,$(realpath $(sass)))
 	npm install node-sass --save-dev
 endif
@@ -106,7 +108,7 @@ endif
 ##
 ## Устанавливает OptiPNG.
 ##
-$(optipng): package.json
+$(optipng): node_modules
 ifeq (,$(realpath $(optipng)))
 	npm install optipng-bin --save-dev
 endif
@@ -114,7 +116,7 @@ endif
 ##
 ## Устанавливает UglifyJS.
 ##
-$(uglifyjs): package.json
+$(uglifyjs): node_modules
 ifeq (,$(realpath $(uglifyjs)))
 	npm install uglify-js --save-dev
 endif
