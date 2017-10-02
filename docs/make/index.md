@@ -17,4 +17,6 @@ include tools/dev-tools/make/common.mk
 
 - [common.mk](common.md)
 - [db.mk](db.md)
+- [npm.mk](npm.md)
 - [remote.mk](remote.md)
+- [wordpress.mk](wordpress.md)

@@ -7,6 +7,12 @@ __LIB_DIR ?= $(dir $(realpath $(lastword $(MAKEFILE_LIST))))
 
 SHELL ?= /bin/bash
 
+## Доменное имя сайта.
+SITE_DOMAIN ?= $(shell basename `pwd`)
+
+## Название сайта.
+SITE_TITLE ?= $(SITE_DOMAIN)
+
 # Задаёт переменную TMPDIR, если она не задана в системе или аргументах make.
 TMPDIR ?= /tmp
 
@@ -61,6 +67,10 @@ run-sass = $(sass) --output-style=compressed --output $(2) $(1)
 ##
 run-uglifyjs = $(uglifyjs) $(1) -o $(2)
 
+ifndef __NPM_MK
+include $(__LIB_DIR)/npm.mk
+endif
+
 ##
 ## Устанавливает зависимости через Composer.
 ##
@@ -76,25 +86,11 @@ composer-update:
 	cd $(COMPOSER_ROOT) && composer update --no-interaction
 
 ##
-## Устанавливает пакеты NodeJS.
-##
-node_modules: package.json
-ifeq ($(realpath node_modules),)
-	npm install
-endif
-
-##
-## Сообщает об ошибке, если файла package.json нет.
-##
-package.json:
-	$(error Файл "package.json" отсутствует. Он должен создаваться вручуню.)
-
-##
 ## Устанавливает jpegoptim.
 ##
 $(jpegoptim): node_modules
 ifeq (,$(realpath $(jpegoptim)))
-	npm install jpegoptim-bin --save-dev
+	$(call run-npm,install jpegoptim-bin --save-dev)
 endif
 
 ##
@@ -102,7 +98,7 @@ endif
 ##
 $(sass): node_modules
 ifeq (,$(realpath $(sass)))
-	npm install node-sass --save-dev
+	$(call run-npm,install node-sass --save-dev)
 endif
 
 ##
@@ -110,7 +106,7 @@ endif
 ##
 $(optipng): node_modules
 ifeq (,$(realpath $(optipng)))
-	npm install optipng-bin --save-dev
+	$(call run-npm,install optipng-bin --save-dev)
 endif
 
 ##
@@ -118,5 +114,5 @@ endif
 ##
 $(uglifyjs): node_modules
 ifeq (,$(realpath $(uglifyjs)))
-	npm install uglify-js --save-dev
+	$(call run-npm,install uglify-js --save-dev)
 endif

@@ -14,39 +14,16 @@ test_db_name = example
 test_db_user = user
 test_db_password = password
 
-## Папка с composer.json
-COMPOSER_ROOT := htdocs
-
-## Папка темы оформления.
-theme_dir := htdocs/themes/customized
-
-##
-## Собирает проект.
-##
-.PHONY: build
-build: tools/dev-tools/.git
-	$(MAKE) all
-
 ##
 ## Собирает все цели проекта.
 ##
 .PHONY: all
 all: scripts styles
 
-##
-## Устанавливает dev-tools.
-##
-tools/dev-tools/.git:
-	git submodule init
-	git submodule update
-
-ifneq (,$(realpath tools/dev-tools/make))
-# Подключаем нужные библиотеки.
-include tools/dev-tools/make/common.mk
-include tools/dev-tools/make/remote.mk
-include tools/dev-tools/make/db.mk
-#include tools/dev-tools/make/wordpress.mk
-endif
+include ../../make/common.mk
+include ../../make/remote.mk
+include ../../make/db.mk
+include ../../make/wordpress.mk
 
 ##
 ## Собирает сценарии.
