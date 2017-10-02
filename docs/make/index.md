@@ -1,12 +1,7 @@
 # Библиотеки GNU Make
 
-Вы можете использовать в своих [файлах Make](https://www.gnu.org/software/make/manual/make.html)
-описанные ниже библиотеки, подключив этот пакет как
-[подмодуль Git](https://git-scm.com/book/ru/v1/Инструменты-Git-Подмодули):
-
-    git submodule add git@git.dobro.site:dobrosite/dev-tools.git tools/dev-tools
-
-После чего библиотеки можно подключать к своему файлу, например:
+После [../../README.md](подключения) к проекту библиотеки можно включать в свой Makefile файл,
+например:
 
 ```makefile
 all: build
