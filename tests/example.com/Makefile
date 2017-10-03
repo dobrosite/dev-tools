@@ -21,6 +21,8 @@ test_db_password = password
 all: scripts styles
 
 include ../../make/common.mk
+include ../../make/npm.mk
+include ../../make/composer.mk
 include ../../make/remote.mk
 include ../../make/db.mk
 include ../../make/wordpress.mk

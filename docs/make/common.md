@@ -4,15 +4,10 @@
 
 ## Переменные
 
-- `COMPOSER_ROOT` — путь к папке, содержащей `composer.json` (по умолчанию та же где `Makefile`).
-- `TMPDIR` — если такая переменная отсутствует в окружении и не задана через аргументы make, она
-  будет создана и указывать на папку `/tmp`.
+- `PUBLIC_DIR` — корневая папка сайта (доступная по HTTP). По умолчанию `htdocs`.
 - `SITE_HOSTNAME` — доменное имя сайта. По умолчанию имя папки проекта.
 - `SITE_TITLE` — название сайта. По умолчанию совпадает с `SITE_DOMAIN`.
 
-Следующие переменные предназначены для использования в качестве зависимостей в целях, требующих
-наличия соответствующих команд.   
- 
 ## Функции
 
 ### assert-variable-set
@@ -98,28 +93,6 @@ foo: $(uglifyjs)
 
 ## Цели
 
-### composer-install
-
-Устанавливает зависимости через Composer.
-
-**Требования**
-
-1. [Composer](https://getcomposer.org/) должен быть установлен в системе и доступен через команду
-   `composer`.
-2. В проекте должен существовать файл `composer.lock` или `composer.json` (см. переменную
-   `COMPOSER_ROOT`).
-
-### composer-update
-
-Обновляет зависимости через Composer.
-
-**Требования**
-
-1. [Composer](https://getcomposer.org/) должен быть установлен в системе и доступен через команду
-   `composer`.
-2. В проекте должен существовать файл `composer.json` (см. переменную `COMPOSER_ROOT`).
-
-
 ### $(jpegoptim)
 
 Устанавливает [jpegoptim](https://github.com/tjko/jpegoptim). 
@@ -127,8 +100,6 @@ foo: $(uglifyjs)
 **Требования**
 
 1. [npm](https://docs.npmjs.com/getting-started/what-is-npm) должен быть установлен.
-2. [package.json](https://docs.npmjs.com/files/package.json) должен существовать и располагаться в
-   одной папке с `Makefile`.
 
 См. [run-jpegoptim](#run-jpegoptim).
 
@@ -140,8 +111,6 @@ foo: $(uglifyjs)
 **Требования**
 
 1. [npm](https://docs.npmjs.com/getting-started/what-is-npm) должен быть установлен.
-2. [package.json](https://docs.npmjs.com/files/package.json) должен существовать и располагаться в
-   одной папке с `Makefile`.
    
 См. [run-optipng](#run-optipng).
 
@@ -153,8 +122,6 @@ foo: $(uglifyjs)
 **Требования**
 
 1. [npm](https://docs.npmjs.com/getting-started/what-is-npm) должен быть установлен.
-2. [package.json](https://docs.npmjs.com/files/package.json) должен существовать и располагаться в
-   одной папке с `Makefile`.
    
 См. [run-sass](#run-sass).
 
@@ -166,7 +133,5 @@ foo: $(uglifyjs)
 **Требования**
 
 1. [npm](https://docs.npmjs.com/getting-started/what-is-npm) должен быть установлен.
-2. [package.json](https://docs.npmjs.com/files/package.json) должен существовать и располагаться в
-   одной папке с `Makefile`.
    
 См. [run-uglifyjs](#run-uglifyjs).

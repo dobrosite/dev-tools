@@ -5,10 +5,16 @@
 
 ## Не выпущено
 
+### Исправлено
+
+- Исправлена защита от повторного подключения файлов *.mk.
+
 ### Добавлено
 
+- Файл `make/composer.mk` — работы с Composer.
 - Файл `make/npm.mk` — работы с npm.
 - Файл `make/wordpress.mk` — работы с Wordpress.
+- Переменная `PUBLIC_DIR` — корневая папка сайта.
 - Переменная `SITE_HOSTNAME` (common.mk) — доменное имя сайта.
 - Переменная `SITE_TITLE` (common.mk) — название сайта.
 
@@ -17,6 +23,10 @@
 - Цель `node_modules` перенесена в `npm.mk`.
 - Цель `package.json` перенесена в `npm.mk`.
 - Цель `package.json` теперь создаёт файл в случае его отсутствия, а не сообщает об ошибке.
+- Цель `composer-install` перенесена в `composer.mk`.
+- Цель `composer-update` перенесена в `composer.mk`.
+- Переменная `COMPOSER_ROOT` переименована в `COMPOSER_ROOT_DIR` и перенесена в `composer.mk`.
+
 
 ## 0.1.2 — 2017-09-28
 

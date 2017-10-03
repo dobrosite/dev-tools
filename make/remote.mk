@@ -2,12 +2,12 @@
 ## Работа с удалёнными системами.
 ##
 
-__COMMON_MK := 1
+ifndef __REMOTE_MK
+
+__REMOTE_MK := 1
 __LIB_DIR ?= $(dir $(realpath $(lastword $(MAKEFILE_LIST))))
 
-ifndef __COMMON_MK
 include $(__LIB_DIR)/common.mk
-endif
 
 ## Протокол доступа к удалённой системе (ssh, ftp).
 REMOTE_PROTO := $($(REMOTE)_proto)
@@ -48,3 +48,6 @@ endef
 ## @param $1 Команда.
 ##
 run-ssh = ssh $(REMOTE_USER)@$(REMOTE_HOST) '/bin/bash -c "$(if $(REMOTE_ROOT),cd $(REMOTE_ROOT) &&) $(1)"'
+
+# ifndef __REMOTE_MK
+endif

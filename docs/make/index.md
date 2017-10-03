@@ -16,6 +16,7 @@ include tools/dev-tools/make/common.mk
 ## Документация по библиотекам
 
 - [common.mk](common.md)
+- [composer.mk](composer.md)
 - [db.mk](db.md)
 - [npm.mk](npm.md)
 - [remote.mk](remote.md)

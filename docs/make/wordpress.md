@@ -24,6 +24,17 @@ foo: $(wp-cli)
 
 ## Цели
 
+### wordpress-install
+
+Устанавливает и настраивает Wordpress.
+
+**Требования**
+
+1. [Composer](https://getcomposer.org/) должен быть установлен в системе и доступен через команду
+   `composer`.
+2. Переменная `LOCAL_DB_NAME` должна содержать имя существующей пустой базы данных.
+
+
 ### $(wp-cli)
 
 Устанавливает [wp-cli](http://wp-cli.org/). 
@@ -31,7 +42,5 @@ foo: $(wp-cli)
 **Требования**
 
 1. [npm](https://docs.npmjs.com/getting-started/what-is-npm) должен быть установлен.
-2. [package.json](https://docs.npmjs.com/files/package.json) должен существовать и располагаться в
-   одной папке с `Makefile`.
 
 См. [run-wp-cli](#run-wp-cli).

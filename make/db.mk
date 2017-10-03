@@ -2,16 +2,13 @@
 ## Работа с базами данных
 ##
 
+ifndef __DB_MK
+
 __DB_MK := 1
 __LIB_DIR ?= $(dir $(realpath $(lastword $(MAKEFILE_LIST))))
 
-ifndef __COMMON_MK
 include $(__LIB_DIR)/common.mk
-endif
-
-ifndef __REMOTE_MK
 include $(__LIB_DIR)/remote.mk
-endif
 
 ## Хост удалённого СУБД (по умолчанию localhost).
 REMOTE_DB_HOST := $($(REMOTE)_db_host)
@@ -141,3 +138,6 @@ else
 	-rm $(tmp_file).xz
 endif
 	-rm $(tmp_file)
+
+# ifndef __DB_MK
+endif

@@ -2,6 +2,8 @@
 ## Функции общего назначения.
 ##
 
+ifndef __COMMON_MK
+
 __COMMON_MK := 1
 __LIB_DIR ?= $(dir $(realpath $(lastword $(MAKEFILE_LIST))))
 
@@ -9,15 +11,13 @@ SHELL ?= /bin/bash
 
 ## Доменное имя сайта.
 SITE_DOMAIN ?= $(shell basename `pwd`)
-
 ## Название сайта.
 SITE_TITLE ?= $(SITE_DOMAIN)
+## Корневая папка файлов, достпных по HTTP.
+PUBLIC_DIR ?= htdocs
 
 # Задаёт переменную TMPDIR, если она не задана в системе или аргументах make.
 TMPDIR ?= /tmp
-
-## Путь к папке, содержащей composer.json.
-COMPOSER_ROOT ?= .
 
 ## Путь к jpegoptim.
 jpegoptim := node_modules/.bin/jpegoptim
@@ -67,24 +67,6 @@ run-sass = $(sass) --output-style=compressed --output $(2) $(1)
 ##
 run-uglifyjs = $(uglifyjs) $(1) -o $(2)
 
-ifndef __NPM_MK
-include $(__LIB_DIR)/npm.mk
-endif
-
-##
-## Устанавливает зависимости через Composer.
-##
-.PHONY: composer-install
-composer-install:
-	cd $(COMPOSER_ROOT) && composer install --no-interaction
-
-##
-## Обновляет зависимости через Composer.
-##
-.PHONY: composer-update
-composer-update:
-	cd $(COMPOSER_ROOT) && composer update --no-interaction
-
 ##
 ## Устанавливает jpegoptim.
 ##
@@ -115,4 +97,12 @@ endif
 $(uglifyjs): node_modules
 ifeq (,$(realpath $(uglifyjs)))
 	$(call run-npm,install uglify-js --save-dev)
+endif
+
+
+ifndef __NPM_MK
+include $(__LIB_DIR)/npm.mk
+endif
+
+# ifndef __COMMON_MK
 endif

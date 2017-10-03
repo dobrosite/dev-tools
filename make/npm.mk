@@ -2,12 +2,12 @@
 ## Работа с Node Package Manager.
 ##
 
+ifndef __NPM_MK
+
 __NPM_MK := 1
 __LIB_DIR ?= $(dir $(realpath $(lastword $(MAKEFILE_LIST))))
 
-ifndef __COMMON_MK
 include $(__LIB_DIR)/common.mk
-endif
 
 ####
 ## Выполняет команду npm
@@ -46,4 +46,7 @@ ifeq ($(realpath package.json),)
 	$(call edit-package.json,-e 'this.keywords=undefined')
 	$(call edit-package.json,-e 'this.author=undefined')
 	$(call run-npm,uninstall json --save-dev)
+endif
+
+# ifndef __NPM_MK
 endif

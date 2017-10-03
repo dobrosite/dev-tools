@@ -14,11 +14,11 @@ test_db_name = example
 test_db_user = user
 test_db_password = password
 
-## Папка с composer.json
-COMPOSER_ROOT := htdocs
+## Папка с composer.json (htdocs)
+COMPOSER_ROOT_DIR := $(PUBLIC_DIR)
 
 ## Папка темы оформления.
-theme_dir := htdocs/themes/customized
+theme_dir := $(PUBLIC_DIR)/themes/customized
 
 ##
 ## Собирает проект.
@@ -43,6 +43,8 @@ tools/dev-tools/.git:
 ifneq (,$(realpath tools/dev-tools/make))
 # Подключаем нужные библиотеки.
 include tools/dev-tools/make/common.mk
+include tools/dev-tools/make/npm.mk
+include tools/dev-tools/make/composer.mk
 include tools/dev-tools/make/remote.mk
 include tools/dev-tools/make/db.mk
 #include tools/dev-tools/make/wordpress.mk
