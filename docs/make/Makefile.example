@@ -31,7 +31,7 @@ include tools/dev-tools/make/composer.mk
 endif
 
 .PHONY: build
-build: scripts styles ## Собирает изменившиеся файлы (цель по умолчанию).
+build: ## Собирает изменившиеся файлы (цель по умолчанию).
 	$(MAKE) prepare
 	$(MAKE) scripts styles
 
