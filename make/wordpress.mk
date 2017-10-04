@@ -26,9 +26,11 @@ run-wp-cli = $(wp-cli) --path=htdocs $(1)
 ##
 wordpress-install:
 	$(call assert-variable-set,LOCAL_DB_NAME,имя локальной БД)
+	$(call assert-variable-set,ADMIN_PASSWORD,пароль пользователя dobrosite)
 	$(MAKE) wordpress-download $(PUBLIC_DIR)/wp-config.php
-	$(call run-wp-cli,core install --url=http://$(SITE_DOMAIN).dobrotest.site --title=$(SITE_TITLE) \
-		--admin_user=dobrosite --admin_email=support@dobro.site --admin_password=dobro --skip-email)
+	$(call run-wp-cli,core install --url=http://$(SITE_DOMAIN).dobrotest.site \
+		--title=$(SITE_TITLE) --admin_user=dobrosite --admin_email=support@dobro.site \
+		--admin_password=$(ADMIN_PASSWORD) --skip-email)
 	$(call run-wp-cli,plugin uninstall --deactivate hello akismet)
 	$(call run-wp-cli,plugin install --activate wp-scss)
 
@@ -43,7 +45,8 @@ wordpress-download: $(wp-cli)
 ##
 $(PUBLIC_DIR)/wp-config.php: $(wp-cli)
 	$(call assert-variable-set,LOCAL_DB_NAME,имя локальной БД)
-	$(call run-wp-cli,core config --dbname=$(LOCAL_DB_NAME) --dbuser=$(LOCAL_DB_USER) --dbpass=$(LOCAL_DB_PASSWORD) --locale=ru_RU)
+	$(call run-wp-cli,core config --dbname=$(LOCAL_DB_NAME) --dbuser=$(LOCAL_DB_USER) \
+		--dbpass=$(LOCAL_DB_PASSWORD) --locale=ru_RU)
 
 ##
 ## Устанавливает wp-cli.
