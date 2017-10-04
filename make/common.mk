@@ -67,6 +67,16 @@ run-sass = $(sass) --output-style=compressed --output $(2) $(1)
 ##
 run-uglifyjs = $(uglifyjs) $(1) -o $(2)
 
+## Цель по умолчанию.
+.DEFAULT_GOAL := build
+
+##
+## Выводит подсказку по доступным целям Make.
+##
+.PHONY: help
+help:
+	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?## / {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
+
 ##
 ## Устанавливает jpegoptim.
 ##

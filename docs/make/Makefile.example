@@ -20,46 +20,34 @@ COMPOSER_ROOT_DIR := $(PUBLIC_DIR)
 ## Папка темы оформления.
 theme_dir := $(PUBLIC_DIR)/themes/customized
 
-##
-## Собирает проект.
-##
-.PHONY: build
-build: tools/dev-tools/.git
-	$(MAKE) all
-
-##
-## Собирает все цели проекта.
-##
-.PHONY: all
-all: scripts styles
-
-##
-## Устанавливает dev-tools.
-##
-tools/dev-tools/.git:
-	git submodule init
-	git submodule update
-
-ifneq (,$(realpath tools/dev-tools/make))
+ifneq ($(realpath tools/dev-tools/make),)
 # Подключаем нужные библиотеки.
 include tools/dev-tools/make/common.mk
 include tools/dev-tools/make/npm.mk
 include tools/dev-tools/make/composer.mk
-include tools/dev-tools/make/remote.mk
-include tools/dev-tools/make/db.mk
+#include tools/dev-tools/make/remote.mk
+#include tools/dev-tools/make/db.mk
 #include tools/dev-tools/make/wordpress.mk
 endif
 
-##
-## Собирает сценарии.
-##
+.PHONY: build
+build: scripts styles ## Собирает изменившиеся файлы (цель по умолчанию).
+	$(MAKE) prepare
+	$(MAKE) scripts styles
+
+## Готовит проект и окружение к сборке.
+.PHONY: prepare
+prepare: tools/dev-tools/.git
+
 .PHONY: scripts
-scripts: $(uglifyjs)
+scripts: $(uglifyjs) ## Собирает сценарии.
 	$(call run-uglifyjs,$(theme_dir)/main.js,$(theme_dir)/main.min.js)
 
-##
-## Собирает стили.
-##
 .PHONY: styles
-styles: $(sass)
+styles: $(sass) ## Собирает стили.
 	$(call run-sass,$(theme_dir)/bundle.scss,$(theme_dir)/bundle.css)
+
+## Устанавливает dev-tools.
+tools/dev-tools/.git:
+	git submodule init
+	git submodule update

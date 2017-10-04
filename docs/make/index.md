@@ -8,8 +8,7 @@ all: build
 
 include tools/dev-tools/make/common.mk
 ```
-Желательно подключать библиотеки как можно ближе к началу файла, но после цели по умолчанию (иначе
-целью по умолчанию может стать цель из библиотеки).
+Подключайте библиотеки после объявления всех переменных, но до объявления целей.
 
 Файл [Makefile.example](Makefile.example) показывает пример использования библиотек.
 
@@ -21,3 +20,7 @@ include tools/dev-tools/make/common.mk
 - [npm.mk](npm.md)
 - [remote.mk](remote.md)
 - [wordpress.mk](wordpress.md)
+
+## См. также
+
+- https://marmelab.com/blog/2016/02/29/auto-documented-makefile.html

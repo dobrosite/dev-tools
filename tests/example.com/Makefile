@@ -14,12 +14,6 @@ test_db_name = example
 test_db_user = user
 test_db_password = password
 
-##
-## Собирает все цели проекта.
-##
-.PHONY: all
-all: scripts styles
-
 include ../../make/common.mk
 include ../../make/npm.mk
 include ../../make/composer.mk
@@ -27,16 +21,24 @@ include ../../make/remote.mk
 include ../../make/db.mk
 include ../../make/wordpress.mk
 
-##
-## Собирает сценарии.
-##
+.PHONY: build
+build: scripts styles ## Собирает изменившиеся файлы (цель по умолчанию).
+	$(MAKE) prepare
+	$(MAKE) scripts styles
+
+## Готовит проект и окружение к сборке.
+.PHONY: prepare
+prepare: tools/dev-tools/.git
+
 .PHONY: scripts
-scripts: $(uglifyjs)
+scripts: $(uglifyjs) ## Собирает сценарии.
 	$(call run-uglifyjs,$(theme_dir)/main.js,$(theme_dir)/main.min.js)
 
-##
-## Собирает стили.
-##
 .PHONY: styles
-styles: $(sass)
+styles: $(sass) ## Собирает стили.
 	$(call run-sass,$(theme_dir)/bundle.scss,$(theme_dir)/bundle.css)
+
+## Устанавливает dev-tools.
+tools/dev-tools/.git:
+	git submodule init
+	git submodule update
