@@ -14,6 +14,9 @@ test_db_name = example
 test_db_user = user
 test_db_password = password
 
+COMPOSER_ROOT_DIR = htdocs
+COMPOSER_BIN_DIR = htdocs/bin
+
 include ../../make/common.mk
 include ../../make/npm.mk
 include ../../make/composer.mk
@@ -22,21 +25,21 @@ include ../../make/db.mk
 include ../../make/wordpress.mk
 
 .PHONY: build
-build: scripts styles ## Собирает изменившиеся файлы (цель по умолчанию).
+build: ## Собирает изменившиеся файлы (цель по умолчанию).
 	$(MAKE) prepare
-	$(MAKE) scripts styles
+#	$(MAKE) scripts styles
 
 ## Готовит проект и окружение к сборке.
 .PHONY: prepare
 prepare: tools/dev-tools/.git
 
-.PHONY: scripts
-scripts: $(uglifyjs) ## Собирает сценарии.
-	$(call run-uglifyjs,$(theme_dir)/main.js,$(theme_dir)/main.min.js)
+#.PHONY: scripts
+#scripts: $(uglifyjs) ## Собирает сценарии.
+#	$(call run-uglifyjs,$(theme_dir)/main.js,$(theme_dir)/main.min.js)
 
-.PHONY: styles
-styles: $(sass) ## Собирает стили.
-	$(call run-sass,$(theme_dir)/bundle.scss,$(theme_dir)/bundle.css)
+#.PHONY: styles
+#styles: $(sass) ## Собирает стили.
+#	$(call run-sass,$(theme_dir)/bundle.scss,$(theme_dir)/bundle.css)
 
 ## Устанавливает dev-tools.
 tools/dev-tools/.git:

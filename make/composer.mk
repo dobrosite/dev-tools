@@ -47,8 +47,8 @@ composer-update: $(composer.json)
 $(composer.json):
 ifeq ($(realpath $(COMPOSER_ROOT_DIR)/composer.json),)
 	$(call run-composer,init --name=dobrosite/$(SITE_DOMAIN) --type=project --stability=stable --license=proprietary)
-	$(call run-composer,config vendor-dir $(patsubst ./%,%,$(COMPOSER_VENDOR_DIR)))
-	$(call run-composer,config bin-dir $(patsubst ./%,%,$(COMPOSER_BIN_DIR)))
+	$(call run-composer,config vendor-dir $(patsubst $(COMPOSER_ROOT_DIR)/%,%,$(COMPOSER_VENDOR_DIR)))
+	$(call run-composer,config bin-dir $(patsubst $(COMPOSER_ROOT_DIR)/%,%,$(COMPOSER_BIN_DIR)))
 endif
 
 # ifndef __COMPOSER_MK
