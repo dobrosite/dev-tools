@@ -46,6 +46,7 @@ run-mysqldump-remote = mysqldump --host=$(REMOTE_DB_HOST) --user=$(REMOTE_DB_USE
 ##
 .PHONY: db-dump
 db-dump:
+ifdef REMOTE
 	$(assert-required-remote-variables)
 ifeq ($(REMOTE_PROTO),ftp)
 	$(error Эта возможность ещё не доделана)
@@ -65,6 +66,10 @@ else
 	-rm $(DB_DUMP_FILE)
 	xz -d $(DB_DUMP_FILE).xz
 endif
+else
+	$(call assert-variable-set,LOCAL_DB_NAME,имя локальной БД)
+	mysqldump --user=$(LOCAL_DB_USER) --password=$(LOCAL_DB_PASSWORD) $(LOCAL_DB_NAME) > $(DB_DUMP_FILE)
+endif
 
 ##
 ## Загружает дамп из db/database.sql в удалённую БД.
@@ -73,53 +78,13 @@ endif
 ##
 .PHONY: db-load
 db-load:
-	$(error Эта возможность ещё не доделана)
-	$(call assert-variable-set,REMOTE,имя конфигурации сайта)
+	$(assert-required-remote-variables)
 ifeq ($(REMOTE),prod)
 	$(error Запись в боевую базу данных запрещена!)
 endif
 	$(if $(REMOTE_HOST),,$(error Undefined variable $(REMOTE)_$(REMOTE_PROTO)_host))
 ifeq ($(REMOTE_PROTO),ftp)
 	$(error Загрузка по FTP пока не поддерживается!)
-else
-	# FIXME
-	xz $(tmp_file)
-#	scp $(tmp_file).xz $(REMOTE_USER)@$(REMOTE_HOST):/tmp/
-#	ssh $(REMOTE_USER)@$(REMOTE_HOST) \
-#		'xzcat /tmp/$(tmp_basename).xz | mysql --host=$(REMOTE_DB_HOST) --user=$(REMOTE_DB_USER) --password=$(REMOTE_DB_PASSWORD) $(REMOTE_DB_NAME)'
-#	-rm $(tmp_file).xz
-endif
-
-##
-## Импортирует БД с удалённого сервера на локальный.
-##
-.PHONY: db-import
-db-import: DB_DUMP_FILE := $(shell mktemp --tmpdir dev-tools-dump-XXXX.sql)
-db-import:
-	$(call assert-variable-set,LOCAL_DB_NAME,имя локальной БД)
-	$(MAKE) db-dump DB_DUMP_FILE=$(DB_DUMP_FILE)
-	$(call run-mysql-local,$(LOCAL_DB_NAME) < $(DB_DUMP_FILE))
-	-rm $(DB_DUMP_FILE)
-
-##
-## Экспортирует БД с локального сервера на удалённый.
-##
-## ВНИМАНИЕ! Во избежание потери данных, экспорт на боевой сайт не поддерживается!
-##
-.PHONY: db-export
-db-export:
-	$(error Эта возможность ещё не доделана)
-	$(call assert-variable-set,REMOTE,имя конфигурации сайта)
-ifeq ($(REMOTE),prod)
-	$(error Export to production server is prohibited!)
-endif
-	$(call assert-variable-set,LOCAL_DB_NAME,имя локальной БД)
-	$(if $(REMOTE_HOST),,$(error Undefined variable $(REMOTE)_$(REMOTE_PROTO)_host))
-	$(eval tmp_file := $(shell mktemp --tmpdir export-db.XXXX))
-	$(eval tmp_basename := $(shell basename $(tmp_file)))
-	mysqldump --user=$(LOCAL_DB_USER) --password=$(LOCAL_DB_PASSWORD) $(LOCAL_DB_NAME) > $(tmp_file)
-ifeq ($(REMOTE_PROTO),ftp)
-	$(error Export over FTP is not supported yet!)
 	$(if $(REMOTE_ROOT),,$(error Undefined variable $(REMOTE)_$(REMOTE_PROTO)_root))
 	$(if $(REMOTE_USER),,$(error Undefined variable $(REMOTE)_$(REMOTE_PROTO)_user))
 	$(if $(REMOTE_PASSWORD),,$(error Undefined variable $(REMOTE)_$(REMOTE_PROTO)_password))
@@ -131,13 +96,41 @@ ifeq ($(REMOTE_PROTO),ftp)
 	-curl ftp://$(REMOTE_HOST)$(REMOTE_ROOT) --request 'DELE mysqldump.php' \
 		--user $(REMOTE_USER):$(REMOTE_PASSWORD)
 else
-	xz $(tmp_file)
-	scp $(tmp_file).xz $(REMOTE_USER)@$(REMOTE_HOST):/tmp/
+	xz $(DB_DUMP_FILE)
+	scp $(DB_DUMP_FILE).xz $(REMOTE_USER)@$(REMOTE_HOST):/tmp/
 	ssh $(REMOTE_USER)@$(REMOTE_HOST) \
-		'xzcat /tmp/$(tmp_basename).xz | mysql --host=$(REMOTE_DB_HOST) --user=$(REMOTE_DB_USER) --password=$(REMOTE_DB_PASSWORD) $(REMOTE_DB_NAME)'
-	-rm $(tmp_file).xz
+		'xzcat /tmp/$(shell basename $(DB_DUMP_FILE)).xz | mysql --host=$(REMOTE_DB_HOST) --user=$(REMOTE_DB_USER) --password=$(REMOTE_DB_PASSWORD) $(REMOTE_DB_NAME)'
+	-rm $(DB_DUMP_FILE).xz
 endif
-	-rm $(tmp_file)
+
+##
+## Импортирует БД с удалённого сервера на локальный.
+##
+.PHONY: db-import
+db-import: DB_DUMP_FILE := $(shell mktemp --tmpdir dev-tools-dump-XXXX.sql)
+db-import:
+	$(assert-required-remote-variables)
+	$(call assert-variable-set,LOCAL_DB_NAME,имя локальной БД)
+	$(MAKE) db-dump DB_DUMP_FILE=$(DB_DUMP_FILE)
+	$(call run-mysql-local,$(LOCAL_DB_NAME) < $(DB_DUMP_FILE))
+	-rm $(DB_DUMP_FILE)
+
+##
+## Экспортирует БД с локального сервера на удалённый.
+##
+## ВНИМАНИЕ! Во избежание потери данных, экспорт на боевой сайт не поддерживается!
+##
+.PHONY: db-export
+db-export: DB_DUMP_FILE := $(shell mktemp --tmpdir dev-tools-dump-XXXX.sql)
+db-export:
+	$(assert-required-remote-variables)
+	$(call assert-variable-set,LOCAL_DB_NAME,имя локальной БД)
+ifeq ($(REMOTE),prod)
+	$(error Экспорт БД на боевой хостинг запрещён!)
+endif
+	$(MAKE) db-dump DB_DUMP_FILE=$(DB_DUMP_FILE)
+	$(MAKE) db-load REMOTE=$(REMOTE) DB_DUMP_FILE=$(DB_DUMP_FILE)
+	-rm $(DB_DUMP_FILE)
 
 # ifndef __DB_MK
 endif
