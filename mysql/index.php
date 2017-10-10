@@ -3,6 +3,10 @@
  * Создание дампа БД MySQL/MariaDB.
  */
 
+use Ifsnop\Mysqldump\Mysqldump;
+
+require __DIR__.'/../vendor/autoload.php';
+
 $user = filter_input(INPUT_POST, 'user', FILTER_SANITIZE_STRING);
 if (null === $user) {
     header('Bad Request', true, 400);
@@ -26,12 +30,17 @@ if (null === $host) {
     $host = 'localhost';
 }
 
-$command = sprintf(
-    'mysqldump --user=%s --password=%s --host=%s %s',
-    $user,
-    $password,
-    $host,
-    $database
-);
-
-passthru($command);
+try {
+    $dump = new Mysqldump(
+        'mysql:host='.$host.';dbname='.$database,
+        $user,
+        $password,
+        [
+            'add-drop-table' => true,
+            'compress' => Mysqldump::GZIP,
+        ]
+    );
+    $dump->start();
+} catch (\Exception $e) {
+    echo 'mysqldump-php error: '.$e->getMessage();
+}

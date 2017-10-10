@@ -49,12 +49,8 @@ db-dump:
 ifdef REMOTE
 	$(assert-required-remote-variables)
 ifeq ($(REMOTE_PROTO),ftp)
-	$(error Эта возможность ещё не доделана)
-	$(if $(REMOTE_ROOT),,$(error Не задана переменная $(REMOTE)_$(REMOTE_PROTO)_root))
-	$(if $(REMOTE_USER),,$(error Не задана переменная $(REMOTE)_$(REMOTE_PROTO)_user))
-	$(if $(REMOTE_PASSWORD),,$(error Не задана переменная $(REMOTE)_$(REMOTE_PROTO)_password))
 	ftp -inpu ftp://$(subst @,%40,$(REMOTE_USER)):$(REMOTE_PASSWORD)@$(REMOTE_HOST)$(REMOTE_ROOT)/mysqldump.php \
-		$(realpath ../.dev-tools/mysqldump.php)
+		$(realpath mysql/mysqldump.php)
 	curl --data 'user=$(prod_db_user)&password=$(prod_db_password)&db=$(prod_db_name)&host=$(prod_db_host)' \
 		$(prod_http_root)/mysqldump.php > $(DB_DUMP_FILE)
 	-curl ftp://$(REMOTE_HOST)$(REMOTE_ROOT) --request 'DELE mysqldump.php' \

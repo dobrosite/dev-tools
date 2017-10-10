@@ -1,0 +1,11 @@
+{
+    "alias": "mysqldump.phar",
+    "directories": [
+        "vendor"
+    ],
+    "files": [
+        "index.php"
+    ],
+    "output": "mysqldump.phar",
+    "web": true
+}
