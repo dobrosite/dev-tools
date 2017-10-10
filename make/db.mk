@@ -50,11 +50,10 @@ ifdef REMOTE
 	$(assert-required-remote-variables)
 ifeq ($(REMOTE_PROTO),ftp)
 	ftp -inpu ftp://$(subst @,%40,$(REMOTE_USER)):$(REMOTE_PASSWORD)@$(REMOTE_HOST)$(REMOTE_ROOT)/mysqldump.php \
-		$(realpath mysql/mysqldump.php)
-	curl --data 'user=$(prod_db_user)&password=$(prod_db_password)&db=$(prod_db_name)&host=$(prod_db_host)' \
-		$(prod_http_root)/mysqldump.php > $(DB_DUMP_FILE)
-	-curl ftp://$(REMOTE_HOST)$(REMOTE_ROOT) --request 'DELE mysqldump.php' \
-		--user $(REMOTE_USER):$(REMOTE_PASSWORD)
+		$(DEV_TOOLS_DIR)/mysql/mysqldump.php
+	curl --data 'user=$(REMOTE_DB_USER)&password=$(REMOTE_DB_PASSWORD)&db=$(REMOTE_DB_NAME)&host=$(REMOTE_DB_HOST)' \
+		$(REMOTE_ROOT)/mysqldump.php > $(DB_DUMP_FILE)
+	-$(call run-ftp,DELE $(REMOTE_ROOT)/mysqldump.php)
 else
 	$(call run-ssh,$(run-mysqldump-remote) $(REMOTE_DB_NAME) | xz > /tmp/$(REMOTE_DB_NAME).sql.xz)
 	-rm $(DB_DUMP_FILE).xz

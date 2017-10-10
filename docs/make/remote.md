@@ -29,7 +29,16 @@ test_http_root = http://example.com.dobrotest.site
 Пример:
 ```makefile
 foo:
-    $(assert-required-remote-variables)
+    $(call assert-required-remote-variables)
+```
+### run-ftp
+
+Выполняет команду FTP.
+
+Пример:
+```makefile
+foo:
+    $(call run-ftp,'DELE foo.txt')
 ```
 
 ### run-ssh
@@ -39,5 +48,5 @@ foo:
 Пример:
 ```makefile
 foo:
-    $(run-ssh,ls htdocs)
+    $(call run-ssh,ls htdocs)
 ```
