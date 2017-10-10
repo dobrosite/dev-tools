@@ -5,7 +5,7 @@
 ifndef __REMOTE_MK
 
 __REMOTE_MK := 1
-__LIB_DIR ?= $(dir $(realpath $(lastword $(MAKEFILE_LIST))))
+__LIB_DIR ?= $(realpath $(dir $(realpath $(lastword $(MAKEFILE_LIST)))))
 
 include $(__LIB_DIR)/common.mk
 
@@ -23,7 +23,9 @@ REMOTE_USER := $($(REMOTE)_$(REMOTE_PROTO)_user)
 ## Пароль (при необходимости)
 REMOTE_PASSWORD := $($(REMOTE)_$(REMOTE_PROTO)_password)
 ## Корневая папка.
-REMOTE_ROOT := $($(REMOTE)_$(REMOTE_PROTO)_root)
+REMOTE_ROOT := $(patsubst %/,%,$($(REMOTE)_$(REMOTE_PROTO)_root))
+## Корневой URK.
+REMOTE_HTTP_ROOT := $($(REMOTE)_http_root)
 
 ifeq ($(REMOTE),test)
 ifeq ($(REMOTE_HOST),)
@@ -41,6 +43,13 @@ define assert-required-remote-variables =
 	$(call assert-variable-set,REMOTE,имя конфигурации сайта)
 	$(if $(REMOTE_HOST),,$(error Не задана переменная $(REMOTE)_$(REMOTE_PROTO)_host))
 endef
+
+####
+## Выполняет команду FTP.
+##
+## @param $1 Команда.
+##
+run-ftp = curl ftp://$(REMOTE_HOST) --user $(REMOTE_USER):$(REMOTE_PASSWORD) --request '$(1)'
 
 ####
 ## Выполняет команду на удалённом сервере по SSH.
