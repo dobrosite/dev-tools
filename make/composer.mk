@@ -5,7 +5,7 @@
 ifndef __COMPOSER_MK
 
 __COMPOSER_MK := 1
-__LIB_DIR ?= $(dir $(realpath $(lastword $(MAKEFILE_LIST))))
+__LIB_DIR ?= $(realpath $(dir $(realpath $(lastword $(MAKEFILE_LIST)))))
 
 include $(__LIB_DIR)/common.mk
 

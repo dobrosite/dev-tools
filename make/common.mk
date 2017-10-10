@@ -5,7 +5,8 @@
 ifndef __COMMON_MK
 
 __COMMON_MK := 1
-__LIB_DIR ?= $(dir $(realpath $(lastword $(MAKEFILE_LIST))))
+__LIB_DIR ?= $(realpath $(dir $(realpath $(lastword $(MAKEFILE_LIST)))))
+DEV_TOOLS_DIR := $(realpath $(dir $(__LIB_DIR)))
 
 SHELL ?= /bin/bash
 
