@@ -56,7 +56,7 @@ run-optipng = $(optipng) -o7 $(1)
 ## Собирает SCSS.
 ##
 ## @param $1 Исходный файл.
-## @param $2 Итоговый файл.
+## @param $2 Папка для файла CSS.
 ##
 run-sass = $(sass) --output-style=compressed --output $(2) $(1)
 
