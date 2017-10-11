@@ -66,7 +66,7 @@ run-sass = $(sass) --output-style=compressed --output $(2) $(1)
 ## @param $1 Исходный файл или файлы (через пробел).
 ## @param $2 Итоговый файл.
 ##
-run-uglifyjs = $(uglifyjs) $(1) -o $(2)
+run-uglifyjs = $(uglifyjs) --screw-ie8 --mangle --compress --output=$(2) $(1)
 
 ## Цель по умолчанию.
 .DEFAULT_GOAL := build
