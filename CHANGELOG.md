@@ -16,7 +16,8 @@
 
 - Цели `db-load` и `db-export` теперь могут загружать дампы по SSH.
 - Цель `db-dump` теперь может работать по FTP.
-- Функция `run-ftp`.
+- Функция [run-ftp](docs/make/remote.md#run-ftp).
+- Переменная [DEV_TOOLS_DIR](docs/make/common.md#Переменные) — путь к папке dev-tools.
 
 
 ## 0.1.5 — 2017-10-04
@@ -32,8 +33,11 @@
 
 ### Добавлено
 
-- Добавлена цель `help`, выводящая список целей с описаниями.
-- Добавлена установка цели по умолчанию `build`.
+- Добавлена цель [help](docs/make/common.md#help), выводящая список целей с описаниями.
+
+### Изменено
+
+- Целью по умолчанию назначена `build`.
 
 
 ## 0.1.3 — 2017-10-03
@@ -44,12 +48,12 @@
 
 ### Добавлено
 
-- Файл `make/composer.mk` — работы с Composer.
-- Файл `make/npm.mk` — работы с npm.
-- Файл `make/wordpress.mk` — работы с Wordpress.
-- Переменная `PUBLIC_DIR` — корневая папка сайта.
-- Переменная `SITE_HOSTNAME` (common.mk) — доменное имя сайта.
-- Переменная `SITE_TITLE` (common.mk) — название сайта.
+- Файл [make/composer.mk](docs/make/composer.md) — работы с Composer.
+- Файл [make/npm.mk](docs/make/npm.md) — работы с npm.
+- Файл [make/wordpress.mk](docs/make/wordpress.md) — работы с Wordpress.
+- Переменная [PUBLIC_DIR](docs/make/common.md#Переменные) — корневая папка сайта.
+- Переменная [SITE_DOMAIN](docs/make/common.md#Переменные) — доменное имя сайта.
+- Переменная [SITE_TITLE](docs/make/common.md#Переменные) — название сайта.
 
 ### Изменено
 
@@ -70,8 +74,10 @@
 ### Добавлено
 
 - Переменная `TMPDIR`, если не установлена, устанавливается равной `/tmp`.
-- Цель `composer-install` — установка зависимостей через Composer.  
-- Цель `composer-update` — обновление зависимостей через Composer.  
+- Цель [composer-install](docs/make/composer.md#composer-install) — установка зависимостей через
+  Composer.  
+- Цель [composer-update](docs/make/composer.md#composer-update) — обновление зависимостей через
+  Composer.  
 
 ### Изменено
 
