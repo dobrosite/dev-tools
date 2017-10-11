@@ -47,6 +47,12 @@ scripts: $(uglifyjs) ## Собирает сценарии.
 styles: $(sass) ## Собирает стили.
 	$(call run-sass,$(theme_dir)/bundle.scss,$(theme_dir)/bundle.css)
 
+.PHONY: update
+update: ## Обновляет зависимости проекта.
+	cd tools/dev-tools && git pull
+#	$(call run-npm,update)
+#	$(MAKE) composer-update
+
 ## Устанавливает dev-tools.
 tools/dev-tools/.git:
 	git submodule init
