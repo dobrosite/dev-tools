@@ -26,7 +26,7 @@ edit-package.json = node_modules/.bin/json --in-place -f package.json $(1)
 ##
 ## Устанавливает пакеты NodeJS.
 ##
-node_modules: package.json
+node_modules: package.json ## Устанавливает пакеты NodeJS.
 ifeq ($(realpath node_modules),)
 	$(call run-npm,install)
 endif
@@ -34,7 +34,7 @@ endif
 ##
 ## Создаёт файл package.json.
 ##
-package.json:
+package.json: ## Создаёт файл package.json.
 ifeq ($(realpath package.json),)
 	npm init --force
 	$(call run-npm,install json --save-dev)

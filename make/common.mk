@@ -75,8 +75,14 @@ run-uglifyjs = $(uglifyjs) --screw-ie8 --mangle --compress --output=$(2) $(1)
 ## Выводит подсказку по доступным целям Make.
 ##
 .PHONY: help
-help:
-	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?## / {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
+help: ## Выводит подсказку по доступным целям Make.
+	@awk 'BEGIN {FS = ":.*?## "; targets[0] = ""} /^[a-zA-Z_\.-]+:.*?## / \
+		{\
+			if (!($$1 in targets)) {\
+				printf "\033[36m%-20s\033[0m %s\n", $$1, $$2;\
+				targets[$$1] = 1;\
+			}\
+		}' $(MAKEFILE_LIST)
 
 ##
 ## Устанавливает jpegoptim.

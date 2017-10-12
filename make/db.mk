@@ -42,10 +42,10 @@ run-mysql-local = mysql --user=$(LOCAL_DB_USER) --password=$(LOCAL_DB_PASSWORD) 
 run-mysqldump-remote = mysqldump --host=$(REMOTE_DB_HOST) --user=$(REMOTE_DB_USER) --password=$(REMOTE_DB_PASSWORD) $(1)
 
 ##
-## Сохраняет дамп БД в db/database.sql
+## Сохраняет дамп БД в файл.
 ##
 .PHONY: db-dump
-db-dump:
+db-dump: ## ## Сохраняет дамп БД в файл.
 ifdef REMOTE
 	$(assert-required-remote-variables)
 ifeq ($(REMOTE_PROTO),ftp)
@@ -67,12 +67,12 @@ else
 endif
 
 ##
-## Загружает дамп из db/database.sql в удалённую БД.
+## Загружает дамп из файла БД.
 ##
 ## ВНИМАНИЕ! Во избежание потери данных, загрузка на боевой сайт не поддерживается!
 ##
 .PHONY: db-load
-db-load:
+db-load: ## Загружает дамп из файла БД.
 	$(assert-required-remote-variables)
 ifeq ($(REMOTE),prod)
 	$(error Запись в боевую базу данных запрещена!)
@@ -103,7 +103,7 @@ endif
 ##
 .PHONY: db-import
 db-import: DB_DUMP_FILE := $(shell mktemp --tmpdir dev-tools-dump-XXXX.sql)
-db-import:
+db-import: ## Импортирует БД с удалённого сервера на локальный.
 	$(assert-required-remote-variables)
 	$(call assert-variable-set,LOCAL_DB_NAME,имя локальной БД)
 	$(MAKE) db-dump DB_DUMP_FILE=$(DB_DUMP_FILE)
@@ -117,7 +117,7 @@ db-import:
 ##
 .PHONY: db-export
 db-export: DB_DUMP_FILE := $(shell mktemp --tmpdir dev-tools-dump-XXXX.sql)
-db-export:
+db-export: ## Экспортирует БД с локального сервера на удалённый.
 	$(assert-required-remote-variables)
 	$(call assert-variable-set,LOCAL_DB_NAME,имя локальной БД)
 ifeq ($(REMOTE),prod)

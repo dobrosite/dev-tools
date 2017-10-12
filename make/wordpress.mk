@@ -24,7 +24,7 @@ run-wp-cli = $(wp-cli) --path=htdocs $(1)
 ##
 ## Устанавливает Wordpress.
 ##
-wordpress-install:
+wordpress-install: ## Устанавливает Wordpress.
 	$(call assert-variable-set,LOCAL_DB_NAME,имя локальной БД)
 	$(call assert-variable-set,ADMIN_PASSWORD,пароль пользователя dobrosite)
 	$(MAKE) wordpress-download $(PUBLIC_DIR)/wp-config.php
@@ -37,7 +37,7 @@ wordpress-install:
 ##
 ## Устанавливает файлы Wordpress.
 ##
-wordpress-download: $(wp-cli)
+wordpress-download: $(wp-cli) ## Устанавливает файлы Wordpress.
 	$(call run-wp-cli,core download --path=$(PUBLIC_DIR) --locale=ru_RU)
 
 ##

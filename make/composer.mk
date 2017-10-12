@@ -31,14 +31,14 @@ run-composer = cd $(COMPOSER_ROOT_DIR) && composer --no-interaction $(1)
 ## Устанавливает зависимости через Composer.
 ##
 .PHONY: composer-install
-composer-install: $(composer.json)
+composer-install: $(composer.json) ## Устанавливает зависимости через Composer.
 	$(call run-composer,install)
 
 ##
 ## Обновляет зависимости через Composer.
 ##
 .PHONY: composer-update
-composer-update: $(composer.json)
+composer-update: $(composer.json) ## Обновляет зависимости через Composer.
 	$(call run-composer,update)
 
 ##
