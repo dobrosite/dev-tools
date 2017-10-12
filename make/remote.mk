@@ -52,6 +52,14 @@ endef
 run-ftp = curl ftp://$(REMOTE_HOST) --user $(REMOTE_USER):$(REMOTE_PASSWORD) --request '$(1)'
 
 ####
+## Загружает файл на сервер FTP.
+##
+## @param $1 Загружаемый файл.
+## @param $1 Путь для загрузки на сервере относительно $(REMOTE_ROOT).
+##
+run-ftp-upload = ftp -inpu ftp://$(subst @,%40,$(REMOTE_USER)):$(REMOTE_PASSWORD)@$(REMOTE_HOST)$(REMOTE_ROOT)/$(2) '$(1)'
+
+####
 ## Выполняет команду на удалённом сервере по SSH.
 ##
 ## @param $1 Команда.

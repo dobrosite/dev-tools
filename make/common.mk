@@ -4,11 +4,12 @@
 
 ifndef __COMMON_MK
 
+SHELL = /bin/sh
+
 __COMMON_MK := 1
 __LIB_DIR ?= $(realpath $(dir $(realpath $(lastword $(MAKEFILE_LIST)))))
-DEV_TOOLS_DIR := $(realpath $(dir $(__LIB_DIR)))
 
-SHELL ?= /bin/bash
+DEV_TOOLS_DIR := $(realpath $(dir $(__LIB_DIR)))
 
 ## Доменное имя сайта.
 SITE_DOMAIN ?= $(shell basename `pwd`)

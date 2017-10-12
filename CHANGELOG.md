@@ -5,6 +5,9 @@
 
 ## Не выпущено
 
+### Добавлено
+
+- Добавлена функция [run-ftp-upload](docs/make/remote.md#run-ftp-upload).
 
 ## 0.1.7 – 2017.10.12
 

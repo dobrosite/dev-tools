@@ -1,6 +1,6 @@
 # remote.mk
 
-Пример настройки:
+## Пример настройки
 
 ```makefile
 prod_proto = ftp
@@ -20,6 +20,13 @@ test_http_root = http://example.com.dobrotest.site
 Если тестовый сайт находится на сервере dobrotest.site, то переменные `test_proto`, `test_*_host`,
 `test_*_user` и `test_*_password` можно не задавать.
 
+## Переменные
+
+### REMOTE
+
+Используется для определения используемой конфигурации. В [примере настройки](#Пример-настройки),
+чтобы подключиться к боевому серверу, `REMOTE` должна быть установлена в `prod`.
+
 ## Функции
 
 ### assert-required-remote-variables
@@ -35,10 +42,39 @@ foo:
 
 Выполняет команду FTP.
 
+Для работы требуется
+
+**Аргументы**
+
+1. Команда FTP с аргументы.
+
+**Требования**
+
+1. Требуется команда `curl`.
+
 Пример:
 ```makefile
 foo:
-    $(call run-ftp,'DELE foo.txt')
+    $(call run-ftp,DELE foo.txt)
+```
+
+### run-ftp-upload
+
+Загружает файл на сервер FTP.
+
+**Аргументы**
+
+1. Загружаемый файл.
+2. Путь для загрузки на сервере относительно $(REMOTE_ROOT).
+
+**Требования**
+
+1. Требуется команда `ftp`.
+
+Пример:
+```makefile
+foo:
+    $(call run-ftp-upload,/path/to/file.ext,remote/path/file.ext)
 ```
 
 ### run-ssh

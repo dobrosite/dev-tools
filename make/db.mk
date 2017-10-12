@@ -45,12 +45,11 @@ run-mysqldump-remote = mysqldump --host=$(REMOTE_DB_HOST) --user=$(REMOTE_DB_USE
 ## Сохраняет дамп БД в файл.
 ##
 .PHONY: db-dump
-db-dump: ## ## Сохраняет дамп БД в файл.
+db-dump: ## Сохраняет дамп БД в файл.
 ifdef REMOTE
 	$(assert-required-remote-variables)
 ifeq ($(REMOTE_PROTO),ftp)
-	ftp -inpu ftp://$(subst @,%40,$(REMOTE_USER)):$(REMOTE_PASSWORD)@$(REMOTE_HOST)$(REMOTE_ROOT)/mysqldump.php \
-		$(DEV_TOOLS_DIR)/mysql/mysqldump.php
+	$(call run-ftp-upload,$(DEV_TOOLS_DIR)/mysql/mysqldump.php,mysqldump.php)
 	curl --data 'user=$(REMOTE_DB_USER)&password=$(REMOTE_DB_PASSWORD)&db=$(REMOTE_DB_NAME)&host=$(REMOTE_DB_HOST)' \
 		$(REMOTE_ROOT)/mysqldump.php > $(DB_DUMP_FILE)
 	-$(call run-ftp,DELE $(REMOTE_ROOT)/mysqldump.php)
@@ -80,16 +79,6 @@ endif
 	$(if $(REMOTE_HOST),,$(error Undefined variable $(REMOTE)_$(REMOTE_PROTO)_host))
 ifeq ($(REMOTE_PROTO),ftp)
 	$(error Загрузка по FTP пока не поддерживается!)
-	$(if $(REMOTE_ROOT),,$(error Undefined variable $(REMOTE)_$(REMOTE_PROTO)_root))
-	$(if $(REMOTE_USER),,$(error Undefined variable $(REMOTE)_$(REMOTE_PROTO)_user))
-	$(if $(REMOTE_PASSWORD),,$(error Undefined variable $(REMOTE)_$(REMOTE_PROTO)_password))
-	$(eval tmp_file := $(shell mktemp --tmpdir import-db.XXXX))
-	curl --upload-file ../.dev-tools/mysqldump.php ftp://$(REMOTE_HOST)$(REMOTE_ROOT) \
-		--user $(REMOTE_USER):$(REMOTE_PASSWORD)
-	curl --data 'user=$(prod_db_user)&password=$(prod_db_password)&db=$(prod_db_name)&host=$(prod_db_host)' \
-		$(prod_http_root)/mysqldump.php > $(tmp_file)
-	-curl ftp://$(REMOTE_HOST)$(REMOTE_ROOT) --request 'DELE mysqldump.php' \
-		--user $(REMOTE_USER):$(REMOTE_PASSWORD)
 else
 	xz $(DB_DUMP_FILE)
 	scp $(DB_DUMP_FILE).xz $(REMOTE_USER)@$(REMOTE_HOST):/tmp/
