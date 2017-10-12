@@ -19,6 +19,14 @@ foo: package.json
 
 ## Цели
 
+### npm-update
+
+Обновляет зависимости через npm.
+
+**Требования**
+
+1. [npm](https://docs.npmjs.com/getting-started/what-is-npm) должен быть установлен.
+
 ### node_modules
 
 Устанавливает зависимости через npm.

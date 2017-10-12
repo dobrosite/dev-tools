@@ -24,9 +24,15 @@ run-npm = npm $(1)
 edit-package.json = node_modules/.bin/json --in-place -f package.json $(1)
 
 ##
-## Устанавливает пакеты NodeJS.
+## Обновляет пакеты через npm.
 ##
-node_modules: package.json ## Устанавливает пакеты NodeJS.
+npm-update: node_modules ## Обновляет пакеты через npm.
+	$(call run-npm,install)
+
+##
+## Устанавливает пакеты через npm.
+##
+node_modules: package.json ## Устанавливает пакеты через npm.
 ifeq ($(realpath node_modules),)
 	$(call run-npm,install)
 endif
