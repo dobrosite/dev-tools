@@ -35,7 +35,7 @@ build: ## Собирает изменившиеся файлы (цель по у
 	# Цель prepare должна выполняться в отдельном процессе, чтобы после неё Makefile мог быть
 	# перечитан заново для подключения библиотек.
 	$(MAKE) prepare
-	$(MAKE) scripts styles
+	$(MAKE) node_modules scripts styles
 
 .PHONY: clean
 clean: composer-clean npm-clean ## Очищает проект от созданных файлов.
