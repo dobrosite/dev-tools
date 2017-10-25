@@ -5,6 +5,11 @@
 
 ## Не выпущено
 
+### Изменено
+
+- Цель [node_modules](docs/make/npm.md#node_modules) теперь вызывает `npm install` с флагом
+  `--global-style=false`.
+
 ### Добавлено
 
 - Добавлена функция [run-ftp-upload](docs/make/remote.md#run-ftp-upload).

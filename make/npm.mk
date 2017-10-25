@@ -34,7 +34,7 @@ npm-update: node_modules ## Обновляет пакеты через npm.
 ##
 node_modules: package.json ## Устанавливает пакеты через npm.
 ifeq ($(realpath node_modules),)
-	$(call run-npm,install)
+	$(call run-npm,install --global-style=false)
 endif
 
 ##
