@@ -19,6 +19,10 @@ foo: package.json
 
 ## Цели
 
+### npm-clean
+
+Удаляет установленные через npm пакеты (папку node_modules).
+
 ### npm-update
 
 Обновляет зависимости через npm.

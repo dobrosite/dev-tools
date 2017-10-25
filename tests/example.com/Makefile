@@ -24,24 +24,20 @@ include ../../make/remote.mk
 include ../../make/db.mk
 include ../../make/wordpress.mk
 
+## Папка темы оформления.
+theme_dir := $(PUBLIC_DIR)
+
 .PHONY: build
 build: ## Собирает изменившиеся файлы (цель по умолчанию).
-	$(MAKE) prepare
-#	$(MAKE) scripts styles
+	$(MAKE) styles
 
-## Готовит проект и окружение к сборке.
-.PHONY: prepare
-prepare: tools/dev-tools/.git
+.PHONY: clean
+clean: composer-clean npm-clean ## Очищает проект от созданных файлов.
 
 #.PHONY: scripts
 #scripts: $(uglifyjs) ## Собирает сценарии.
 #	$(call run-uglifyjs,$(theme_dir)/main.js,$(theme_dir)/main.min.js)
 
-#.PHONY: styles
-#styles: $(sass) ## Собирает стили.
-#	$(call run-sass,$(theme_dir)/bundle.scss,$(theme_dir)/bundle.css)
-
-## Устанавливает dev-tools.
-tools/dev-tools/.git:
-	git submodule init
-	git submodule update
+.PHONY: styles
+styles: $(sass) ## Собирает стили.
+	$(call run-sass,styles/bundle.scss,$(theme_dir))

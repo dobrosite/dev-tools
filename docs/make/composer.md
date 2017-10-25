@@ -30,6 +30,10 @@ foo:
 
 ## Цели
 
+### composer-clean
+
+Удаляет установленные через Composer пакеты.
+
 ### composer-install
 
 Устанавливает зависимости через Composer.

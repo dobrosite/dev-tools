@@ -17,27 +17,35 @@ test_db_password = password
 ## Папка с composer.json (htdocs)
 COMPOSER_ROOT_DIR := $(PUBLIC_DIR)
 
-## Папка темы оформления.
-theme_dir := $(PUBLIC_DIR)/themes/customized
-
 ifneq ($(realpath tools/dev-tools/make),)
 # Подключаем нужные библиотеки.
 include tools/dev-tools/make/common.mk
 include tools/dev-tools/make/npm.mk
 include tools/dev-tools/make/composer.mk
-#include tools/dev-tools/make/remote.mk
-#include tools/dev-tools/make/db.mk
+include tools/dev-tools/make/remote.mk
+include tools/dev-tools/make/db.mk
 #include tools/dev-tools/make/wordpress.mk
 endif
 
+## Папка темы оформления.
+theme_dir := $(PUBLIC_DIR)/themes/customized
+
 .PHONY: build
 build: ## Собирает изменившиеся файлы (цель по умолчанию).
+	# Цель prepare должна выполняться в отдельном процессе, чтобы после неё Makefile мог быть
+	# перечитан заново для подключения библиотек.
 	$(MAKE) prepare
 	$(MAKE) scripts styles
+
+.PHONY: clean
+clean: composer-clean npm-clean ## Очищает проект от созданных файлов.
 
 ## Готовит проект и окружение к сборке.
 .PHONY: prepare
 prepare: tools/dev-tools/.git
+ifneq ($(realpath package.json),)
+	$(MAKE) node_modules
+endif
 
 .PHONY: scripts
 scripts: $(uglifyjs) ## Собирает сценарии.
@@ -45,7 +53,7 @@ scripts: $(uglifyjs) ## Собирает сценарии.
 
 .PHONY: styles
 styles: $(sass) ## Собирает стили.
-	$(call run-sass,$(theme_dir)/bundle.scss,$(theme_dir)/bundle.css)
+	$(call run-sass,$(theme_dir)/bundle.scss,$(theme_dir))
 
 .PHONY: update
 update: ## Обновляет зависимости проекта.

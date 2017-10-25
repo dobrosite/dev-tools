@@ -24,8 +24,18 @@ run-npm = npm $(1)
 edit-package.json = node_modules/.bin/json --in-place -f package.json $(1)
 
 ##
+## Удаляет установленные через npm пакеты.
+##
+.PHONY: npm-clean
+npm-clean: ## Удаляет установленные через npm пакеты.
+ifneq ($(realpath node_modules),)
+	rm -rf node_modules
+endif
+
+##
 ## Обновляет пакеты через npm.
 ##
+.PHONY: npm-update
 npm-update: node_modules ## Обновляет пакеты через npm.
 	$(call run-npm,install)
 

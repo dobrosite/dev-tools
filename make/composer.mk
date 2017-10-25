@@ -28,6 +28,15 @@ composer.json = $(COMPOSER_ROOT_DIR)/composer.json
 run-composer = cd $(COMPOSER_ROOT_DIR) && composer --no-interaction $(1)
 
 ##
+## Удаляет установленные через Composer пакеты.
+##
+.PHONY: composer-clean
+composer-clean: ## Удаляет установленные через Composer пакеты.
+ifneq ($(realpath $(COMPOSER_VENDOR_DIR)),)
+	rm -rf $(COMPOSER_VENDOR_DIR)
+endif
+
+##
 ## Устанавливает зависимости через Composer.
 ##
 .PHONY: composer-install

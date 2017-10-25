@@ -12,6 +12,8 @@
 
 ### Добавлено
 
+- Добавлена цель [composer-clean](docs/make/composer.md#composer-clean).
+- Добавлена цель [npm-clean](docs/make/npm.md#npm-clean).
 - Добавлена функция [run-ftp-upload](docs/make/remote.md#run-ftp-upload).
 
 ## 0.1.7 – 2017.10.12
