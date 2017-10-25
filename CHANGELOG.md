@@ -5,6 +5,8 @@
 
 ## Не выпущено
 
+## 0.1.8 — 2017.10.25
+
 ### Изменено
 
 - Цель [node_modules](docs/make/npm.md#node_modules) теперь вызывает `npm install` с флагом
