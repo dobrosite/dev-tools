@@ -24,7 +24,7 @@ REMOTE_USER := $($(REMOTE)_$(REMOTE_PROTO)_user)
 REMOTE_PASSWORD := $($(REMOTE)_$(REMOTE_PROTO)_password)
 ## Корневая папка.
 REMOTE_ROOT := $(patsubst %/,%,$($(REMOTE)_$(REMOTE_PROTO)_root))
-## Корневой URK.
+## Корневой URL.
 REMOTE_HTTP_ROOT := $($(REMOTE)_http_root)
 
 ifeq ($(REMOTE),test)

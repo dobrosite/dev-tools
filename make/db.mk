@@ -51,7 +51,7 @@ ifdef REMOTE
 ifeq ($(REMOTE_PROTO),ftp)
 	$(call run-ftp-upload,$(DEV_TOOLS_DIR)/mysql/mysqldump.php,mysqldump.php)
 	curl --data 'user=$(REMOTE_DB_USER)&password=$(REMOTE_DB_PASSWORD)&db=$(REMOTE_DB_NAME)&host=$(REMOTE_DB_HOST)' \
-		$(REMOTE_ROOT)/mysqldump.php > $(DB_DUMP_FILE)
+		$(REMOTE_HTTP_ROOT)/mysqldump.php > $(DB_DUMP_FILE)
 	-$(call run-ftp,DELE $(REMOTE_ROOT)/mysqldump.php)
 else
 	$(call run-ssh,$(run-mysqldump-remote) $(REMOTE_DB_NAME) | xz > /tmp/$(REMOTE_DB_NAME).sql.xz)
