@@ -57,7 +57,7 @@ run-ftp = curl ftp://$(REMOTE_HOST) --user $(REMOTE_USER):$(REMOTE_PASSWORD) --r
 ## @param $1 Загружаемый файл.
 ## @param $1 Путь для загрузки на сервере относительно $(REMOTE_ROOT).
 ##
-run-ftp-upload = ftp -inpu ftp://$(subst @,%40,$(REMOTE_USER)):$(REMOTE_PASSWORD)@$(REMOTE_HOST)$(REMOTE_ROOT)/$(2) '$(1)'
+run-ftp-upload = curl --upload-file '$(1)' ftp://$(REMOTE_HOST)$(REMOTE_ROOT) --user $(REMOTE_USER):$(REMOTE_PASSWORD)
 
 ####
 ## Выполняет команду на удалённом сервере по SSH.
