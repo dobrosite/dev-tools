@@ -32,8 +32,8 @@ theme_dir := $(PUBLIC_DIR)/themes/customized
 
 .PHONY: build
 build: ## Собирает изменившиеся файлы (цель по умолчанию).
-	# dev-tools должны устанавливаться в отдельном процессе, чтобы после Makefile был перечитан
-	# заново для подключения библиотек.
+# dev-tools должны устанавливаться в отдельном процессе, чтобы после Makefile был перечитан
+# заново для подключения библиотек.
 	$(MAKE) tools/dev-tools/.git
 	$(MAKE) node_modules scripts styles
 
