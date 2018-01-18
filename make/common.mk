@@ -73,6 +73,15 @@ run-uglifyjs = $(uglifyjs) --screw-ie8 --mangle --compress --output=$(2) $(1)
 .DEFAULT_GOAL := build
 
 ##
+## Создаёт архив проекта.
+##
+.PHONY: archive
+archive: ## Создаёт архив проекта (для передачи заказчику).
+	-rm $(SITE_DOMAIN).zip
+	git archive --format=zip --output=$(SITE_DOMAIN).zip -9 HEAD
+	zip --recurse-paths $(SITE_DOMAIN).zip tools
+
+##
 ## Выводит подсказку по доступным целям Make.
 ##
 .PHONY: help
