@@ -1,0 +1,22 @@
+##
+## Доступы для использования в Makefile.
+## ВНИМАНИЕ! Не помещайте этот файл в Git во избежание утечки паролей!
+##
+
+## Настройки подключения к боевому сайту.
+prod_proto = ftp
+prod_ftp_host = ftp.example.com
+prod_ftp_user = user
+prod_ftp_password = password
+prod_ftp_root = /
+prod_http_root = http://example.com/
+prod_db_host = localhost:3306
+prod_db_name = example
+prod_db_user = user
+prod_db_password = password
+
+## Настройки подключения к тестовому сайту.
+test_http_root = http://example.com.dobrotest.site
+test_db_name = example
+test_db_user = user
+test_db_password = password
