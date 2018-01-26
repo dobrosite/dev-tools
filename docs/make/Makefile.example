@@ -4,14 +4,14 @@ include Makefile.local
 ## Папка с composer.json (htdocs)
 COMPOSER_ROOT_DIR := $(PUBLIC_DIR)
 
-ifneq ($(realpath tools/dev-tools/make),)
+ifneq ($(realpath develop/dev-tools/make),)
 # Подключаем нужные библиотеки.
-include tools/dev-tools/make/common.mk
-include tools/dev-tools/make/npm.mk
-include tools/dev-tools/make/composer.mk
-include tools/dev-tools/make/remote.mk
-include tools/dev-tools/make/db.mk
-#include tools/dev-tools/make/wordpress.mk
+include develop/dev-tools/make/common.mk
+include develop/dev-tools/make/npm.mk
+include develop/dev-tools/make/composer.mk
+include develop/dev-tools/make/remote.mk
+include develop/dev-tools/make/db.mk
+#include develop/dev-tools/make/wordpress.mk
 endif
 
 ## Папка темы оформления.
@@ -21,7 +21,7 @@ theme_dir := $(PUBLIC_DIR)/themes/customized
 build: ## Собирает изменившиеся файлы (цель по умолчанию).
 # dev-tools должны устанавливаться в отдельном процессе, чтобы после Makefile был перечитан
 # заново для подключения библиотек.
-	$(MAKE) tools/dev-tools/.git
+	$(MAKE) develop/dev-tools/.git
 	$(MAKE) node_modules scripts styles
 
 .PHONY: clean
@@ -37,11 +37,11 @@ styles: $(sass) ## Собирает стили.
 
 .PHONY: update
 update: ## Обновляет зависимости проекта.
-	cd tools/dev-tools && git pull
+	cd develop/dev-tools && git pull
 #	$(MAKE) npm-update
 #	$(MAKE) composer-update
 
 ## Устанавливает dev-tools.
-tools/dev-tools/.git:
+develop/dev-tools/.git:
 	git submodule init
 	git submodule update
