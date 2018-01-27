@@ -17,6 +17,10 @@ endif
 ## Папка темы оформления.
 theme_dir := $(PUBLIC_DIR)/themes/customized
 
+.PHONY: prepare
+prepare: develop/dev-tools/.git ## Готовит проект и окружение к сборке.
+	$(MAKE) composer-install
+
 .PHONY: build
 build: ## Собирает изменившиеся файлы (цель по умолчанию).
 # dev-tools должны устанавливаться в отдельном процессе, чтобы после Makefile был перечитан
@@ -38,8 +42,8 @@ styles: $(sass) ## Собирает стили.
 .PHONY: update
 update: ## Обновляет зависимости проекта.
 	cd develop/dev-tools && git pull
-#	$(MAKE) npm-update
-#	$(MAKE) composer-update
+	$(MAKE) npm-update
+	$(MAKE) composer-update
 
 ## Устанавливает dev-tools.
 develop/dev-tools/.git:

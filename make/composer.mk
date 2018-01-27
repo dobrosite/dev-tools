@@ -14,6 +14,7 @@ COMPOSER_ROOT_DIR ?= .
 ## Путь к папке для установки зависимостей.
 COMPOSER_VENDOR_DIR ?= $(COMPOSER_ROOT_DIR)/vendor
 ## Путь к папке для установки исполняемых файлов.
+# TODO cat htdocs/composer.json | grep bin-dir | awk '{gsub(/"/, "", $2); print $2}'
 COMPOSER_BIN_DIR ?= $(COMPOSER_VENDOR_DIR)/bin
 
 ## Путь к файлу composer.json
@@ -34,6 +35,9 @@ run-composer = cd $(COMPOSER_ROOT_DIR) && composer --no-interaction $(1)
 composer-clean: ## Удаляет установленные через Composer пакеты.
 ifneq ($(realpath $(COMPOSER_VENDOR_DIR)),)
 	rm -rf $(COMPOSER_VENDOR_DIR)
+endif
+ifneq ($(realpath $(COMPOSER_BIN_DIR)),)
+	rm -rf $(COMPOSER_BIN_DIR)
 endif
 
 ##
