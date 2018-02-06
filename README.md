@@ -12,3 +12,25 @@
 
     git submodule add git@git.dobro.site:dobrosite/dev-tools.git develop/dev-tools
     git commit -am 'Подключены dev-tools'
+
+## Обновление c 0.1.x до 1.x
+
+Выполните
+
+    git submodule deinit tools/dev-tools
+
+Удалите из файла `.gitmodules` код
+
+```
+[submodule "tools/dev-tools"]
+	path = tools/dev-tools
+	url = git@git.dobro.site:dobrosite/dev-tools.git
+```
+
+Выполните
+
+    git add .gitmodules
+    git rm --cached tools/dev-tools
+    rm -rf .git/modules/tools/dev-tools
+
+Выполните действия, описанные в разделе [Подключение к проекту](#Подключение к проекту).
