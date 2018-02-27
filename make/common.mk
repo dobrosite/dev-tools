@@ -82,6 +82,13 @@ archive: ## Создаёт архив проекта (для передачи з
 	zip --recurse-paths $(SITE_DOMAIN).zip $(DEV_TOOLS_DIR)
 
 ##
+## Обновляет dev-tools.
+##
+.PHONY: dev-tools-update
+dev-tools-update: develop/dev-tools/.git ## Обновляет dev-tools.
+	cd develop/dev-tools && git pull
+
+##
 ## Выводит подсказку по доступным целям Make.
 ##
 .PHONY: help

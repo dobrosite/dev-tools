@@ -5,6 +5,10 @@
 
 ## Не выпущено
 
+### Добавлено
+
+- Добавлена цель [dev-tools-update](docs/make/common.md#dev-tools-update).
+
 
 ## 1.2.0 — 2018.02.27
 

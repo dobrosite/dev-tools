@@ -12,7 +12,6 @@ endif
 # Подключаем нужные библиотеки, если dev-tools установлены.
 ifneq ($(realpath develop/dev-tools/make),)
 include develop/dev-tools/make/common.mk
-include develop/dev-tools/make/npm.mk
 
 ## Папка с composer.json (htdocs)
 COMPOSER_ROOT_DIR := $(PUBLIC_DIR)
@@ -44,6 +43,7 @@ prepare: develop/dev-tools/.git ## Готовит проект и окружен
 develop/dev-tools/.git:
 	git submodule init
 	git submodule update
+	cd develop/dev-tools && git checkout latest-1.x
 
 .PHONY: deps
 deps: ## Устанавлдивает сторонние зависимости.
@@ -58,7 +58,6 @@ endif
 
 .PHONY: update
 update: ## Обновляет зависимости проекта.
-	cd develop/dev-tools && git pull
 # Если есть файл composer.json, обновляем зависимости через Composer.
 ifneq ($(realpath $(composer.json)),)
 	$(MAKE) composer-update

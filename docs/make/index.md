@@ -1,14 +1,11 @@
 # Библиотеки GNU Make
 
-После [../../README.md](подключения) к проекту библиотеки можно включать в свой Makefile файл,
+После [подключения](../../README.md) к проекту, библиотеки можно включать в свой Makefile файл,
 например:
 
 ```makefile
-all: build
-
-include tools/dev-tools/make/common.mk
+include develop/dev-tools/make/common.mk
 ```
-Подключайте библиотеки после объявления всех переменных, но до объявления целей.
 
 Файл [Makefile.example](Makefile.example) показывает пример использования библиотек.
 
