@@ -30,22 +30,9 @@ foo:
 
 ## Цели
 
-### composer-clean
-
-Удаляет установленные через Composer пакеты.
-
-### composer-install
+### $(COMPOSER_VENDOR_DIR)
 
 Устанавливает зависимости через Composer.
-
-**Требования**
-
-1. [Composer](https://getcomposer.org/) должен быть установлен в системе и доступен через команду
-   `composer`.
-
-### composer-update
-
-Обновляет зависимости через Composer.
 
 **Требования**
 
@@ -58,6 +45,21 @@ foo:
 Предназначена для использования в качестве зависимости для целей, требующих наличие этого файла.
 
 Создаёт файл [composer.json](https://getcomposer.org/doc/01-basic-usage.md#composer-json-project-setup). 
+
+**Требования**
+
+1. [Composer](https://getcomposer.org/) должен быть установлен в системе и доступен через команду
+   `composer`.
+
+
+### composer-clean
+
+Удаляет установленные через Composer пакеты.
+
+
+### composer-update
+
+Обновляет зависимости через Composer.
 
 **Требования**
 

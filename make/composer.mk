@@ -43,9 +43,14 @@ endif
 ##
 ## Устанавливает зависимости через Composer.
 ##
-.PHONY: composer-install
-composer-install: $(composer.json) ## Устанавливает зависимости через Composer.
+$(COMPOSER_VENDOR_DIR): $(composer.json) ## Устанавливает зависимости через Composer.
 	$(call run-composer,install)
+
+# TODO Удалить в 2.x
+.PHONY: composer-install
+composer-install:
+	$(info ВНИМАНИЕ! Цель "composer-install" устарела и будет удалена в версии 2.0.)
+	$(MAKE) $(COMPOSER_VENDOR_DIR)
 
 ##
 ## Обновляет зависимости через Composer.

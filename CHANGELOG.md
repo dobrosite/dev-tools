@@ -9,6 +9,8 @@
 
 - Цель `composer-clean` теперь удаляет ещё и папку
   [COMPOSER_BIN_DIR](docs/make/composer.md#Переменные).
+- Цель `composer-install` объявлена устаревшей. Вместо неё используйте
+  [$(COMPOSER_VENDOR_DIR)](docs/make/composer.md#$(COMPOSER_VENDOR_DIR)).
 
 
 ## 1.1.0 — 2018.01.26
@@ -17,7 +19,7 @@
 
 - Инструменты теперь должны устанавливаться в папку `develop`.
 - Настройки доступов теперь должны храниться в отельном файле `Makefile.local`, см.
-[пример](docs/make/Makefile.local.example).
+  [пример](docs/make/Makefile.local.example).
 
 
 ## 1.0.0 — 2018-01-18
