@@ -5,6 +5,9 @@
 
 ## Не выпущено
 
+
+## 1.3.0 — 2018.02.27
+
 ### Добавлено
 
 - Добавлена цель [dev-tools-update](docs/make/common.md#dev-tools-update).
