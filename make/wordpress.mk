@@ -53,7 +53,7 @@ $(PUBLIC_DIR)/wp-config.php: $(wp-cli)
 ##
 $(wp-cli): $(composer.json)
 ifeq ($(realpath $(wp-cli)),)
-	$(call run-composer,require wp-cli/wp-cli)
+	$(call run-composer,require-dev wp-cli/wp-cli)
 endif
 
 # ifndef __WORDPRESS_MK

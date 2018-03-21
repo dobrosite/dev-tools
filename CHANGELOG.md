@@ -10,6 +10,11 @@
 - Команда [run-wp-cli](docs/make/wordpress.md#run-wp-cli) не использовала переменную
   [$(PUBLIC_DIR)](docs/make/common.md#Переменные).
 
+### Изменено
+
+- Цель [$(wp-cli)](docs/make/wordpress.md#$(wp-cli)) теперь устанавливает `wp-cli` как зависимость
+ `require-dev`.
+
 
 ## 1.3.0 — 2018.02.27
 
