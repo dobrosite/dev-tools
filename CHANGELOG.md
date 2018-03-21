@@ -5,6 +5,11 @@
 
 ## Не выпущено
 
+### Исправлено
+
+- Команда [run-wp-cli](docs/make/wordpress.md#run-wp-cli) не использовала переменную
+  [$(PUBLIC_DIR)](docs/make/common.md#Переменные).
+
 
 ## 1.3.0 — 2018.02.27
 

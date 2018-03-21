@@ -19,7 +19,7 @@ wp-cli := $(COMPOSER_BIN_DIR)/wp
 ##
 ## @param $1 Аргументы команды
 ##
-run-wp-cli = $(wp-cli) --path=htdocs $(1)
+run-wp-cli = $(wp-cli) --path=$(PUBLIC_DIR) $(1)
 
 ##
 ## Устанавливает Wordpress.
