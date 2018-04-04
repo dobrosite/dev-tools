@@ -10,7 +10,7 @@
 Подключите это хранилище к своему проекту как
 [подмодуль Git](https://git-scm.com/book/ru/v1/Инструменты-Git-Подмодули):
 
-    git submodule add git@github.com:dobrosite/dev-tools.git develop/dev-tools
+    git submodule add https://github.com/dobrosite/dev-tools.git develop/dev-tools
     git commit -am 'Подключены dev-tools'
 
 ## Обновление c 0.1.x до 1.x
