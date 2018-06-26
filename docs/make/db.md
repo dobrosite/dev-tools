@@ -15,6 +15,18 @@
 
 Имя локальной БД. Должна задаваться в командной строке при вызове make. 
 
+### MYSQLDUMP_OPTIONS
+
+Опции для `mysqldump`. По умолчанию содержит:
+
+- `--add-drop-table`
+- `--add-locks`
+- `--allow-keywords`
+- `--disable-keys`
+- `--no-create-db`
+- `--skip-comments`
+- `--skip-compact`
+
 ## Цели
 
 ### db-dump

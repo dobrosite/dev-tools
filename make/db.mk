@@ -1,5 +1,5 @@
 ##
-## Работа с базами данных
+## Работа с базами данных.
 ##
 
 ifndef __DB_MK
@@ -29,17 +29,29 @@ LOCAL_DB_PASSWORD ?= password
 ## Файл дампа БД.
 DB_DUMP_FILE := db/database.sql
 
+## Опции для mysqldump.
+MYSQLDUMP_OPTIONS=\
+	--add-drop-table \
+	--add-locks \
+	--allow-keywords \
+	--disable-keys \
+	--no-create-db \
+	--skip-comments \
+	--skip-compact \
+	--skip-extended-insert
+
 ####
 ## Выполняет команду с локальным СУБД MySQL.
 ##
 run-mysql-local = mysql --user=$(LOCAL_DB_USER) --password=$(LOCAL_DB_PASSWORD) $(1)
 
 ####
-## Выполняет mysqldump на удалённом сервере
+## Выполняет mysqldump на удалённом сервере.
 ##
-## @param $1 Имя базы данных
+## @param $1 Имя базы данных.
 ##
-run-mysqldump-remote = mysqldump --host=$(REMOTE_DB_HOST) --user=$(REMOTE_DB_USER) --password=$(REMOTE_DB_PASSWORD) $(1)
+run-mysqldump-remote = mysqldump --no-defaults --host=$(REMOTE_DB_HOST) --user=$(REMOTE_DB_USER) \
+	--password=$(REMOTE_DB_PASSWORD) $(MYSQLDUMP_OPTIONS) $(1)
 
 ##
 ## Сохраняет дамп БД в файл.
@@ -62,7 +74,8 @@ else
 endif
 else
 	$(call assert-variable-set,LOCAL_DB_NAME,имя локальной БД)
-	mysqldump --user=$(LOCAL_DB_USER) --password=$(LOCAL_DB_PASSWORD) $(LOCAL_DB_NAME) > $(DB_DUMP_FILE)
+	mysqldump --user=$(LOCAL_DB_USER) --password=$(LOCAL_DB_PASSWORD) $(MYSQLDUMP_OPTIONS) \
+		$(LOCAL_DB_NAME) > $(DB_DUMP_FILE)
 endif
 
 ##
