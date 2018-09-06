@@ -11,6 +11,8 @@ __LIB_DIR ?= $(realpath $(dir $(realpath $(lastword $(MAKEFILE_LIST)))))
 
 DEV_TOOLS_DIR := $(realpath $(dir $(__LIB_DIR)))
 
+## Целевое окружение.
+ENV ?= dev
 ## Доменное имя сайта.
 SITE_DOMAIN ?= $(shell basename `pwd`)
 ## Название сайта.

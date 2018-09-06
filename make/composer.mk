@@ -44,7 +44,7 @@ endif
 ## Устанавливает зависимости через Composer.
 ##
 $(COMPOSER_VENDOR_DIR): $(composer.json) ## Устанавливает зависимости через Composer.
-	$(call run-composer,install)
+	$(call run-composer,install$(if $(findstring prod,$(ENV)), --no-dev,))
 
 # TODO Удалить в 2.x
 .PHONY: composer-install
@@ -57,7 +57,7 @@ composer-install:
 ##
 .PHONY: composer-update
 composer-update: $(composer.json) ## Обновляет зависимости через Composer.
-	$(call run-composer,update)
+	$(call run-composer,update$(if $(findstring prod,$(ENV)), --no-dev,))
 
 ##
 ## Создаёт файл composer.json.

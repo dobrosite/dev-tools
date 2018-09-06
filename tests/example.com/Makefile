@@ -28,7 +28,7 @@ include ../../make/wordpress.mk
 theme_dir := $(PUBLIC_DIR)
 
 .PHONY: build
-build: ## Собирает изменившиеся файлы (цель по умолчанию).
+build: $(COMPOSER_VENDOR_DIR) ## Собирает изменившиеся файлы (цель по умолчанию).
 	$(MAKE) styles
 
 .PHONY: clean
