@@ -46,7 +46,7 @@ develop/dev-tools/.git:
 	cd develop/dev-tools && git checkout latest-1.x
 
 .PHONY: deps
-deps: ## Устанавлдивает сторонние зависимости.
+deps: ## Устанавливает сторонние зависимости.
 # Если есть файл composer.json, устанавливаем зависимости через Composer.
 ifneq ($(realpath $(composer.json)),)
 	$(MAKE) $(COMPOSER_VENDOR_DIR)
