@@ -64,7 +64,25 @@ run-ftp-upload = curl --upload-file '$(1)' ftp://$(REMOTE_HOST)$(REMOTE_ROOT) --
 ##
 ## @param $1 Команда.
 ##
-run-ssh = ssh $(REMOTE_USER)@$(REMOTE_HOST) '/bin/bash -c "$(if $(REMOTE_ROOT),cd $(REMOTE_ROOT) &&) $(1)"'
+ifneq ($(REMOTE_PASSWORD),)
+run-ssh = sshpass -p '$(REMOTE_PASSWORD)' ssh $(REMOTE_USER)@$(REMOTE_HOST) \
+	'/bin/bash -c "$(if $(REMOTE_ROOT),cd $(REMOTE_ROOT) &&) $(1)"'
+else
+run-ssh = ssh $(REMOTE_USER)@$(REMOTE_HOST) \
+	'/bin/bash -c "$(if $(REMOTE_ROOT),cd $(REMOTE_ROOT) &&) $(1)"'
+endif
+
+####
+## Выполняет копирование с удалённого сервера по SSH.
+##
+## @param $1 Источник.
+## @param $2 Назначение.
+##
+ifneq ($(REMOTE_PASSWORD),)
+run-scp-from = sshpass -p '$(REMOTE_PASSWORD)' scp $(REMOTE_USER)@$(REMOTE_HOST):$(1) $(2)
+else
+run-scp-from = scp $(REMOTE_USER)@$(REMOTE_HOST):$(1) $(2)
+endif
 
 # ifndef __REMOTE_MK
 endif

@@ -77,12 +77,20 @@ foo:
     $(call run-ftp-upload,/path/to/file.ext,remote/path/file.ext)
 ```
 
+### run-scp-from
+
+Копирует файлы с удалённого сервера по SSH.  Для авторизации по паролю требуется утилита
+[sshpass][].
+
 ### run-ssh
 
-Выполняет команду на удалённом сервере по SSH.
+Выполняет команду на удалённом сервере по SSH. Для авторизации по паролю требуется утилита
+[sshpass][].
 
 Пример:
 ```makefile
 foo:
     $(call run-ssh,ls htdocs)
 ```
+
+[sshpass]: https://sourceforge.net/projects/sshpass/

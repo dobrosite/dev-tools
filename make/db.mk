@@ -22,7 +22,8 @@ REMOTE_DB_PASSWORD := $($(REMOTE)_db_password)
 ## Имя удалённой БД.
 REMOTE_DB_NAME := $($(REMOTE)_db_name)
 
-## Локальный пользователь и его пароль.
+## Доступ к локальной БД
+LOCAL_DB_HOST ?= localhost
 LOCAL_DB_USER ?= user
 LOCAL_DB_PASSWORD ?= password
 
@@ -40,10 +41,16 @@ MYSQLDUMP_OPTIONS=\
 	--skip-compact \
 	--skip-extended-insert
 
+## Таблицы, которые надо пропустить при создании дампа (через пробел).
+MYSQLDUMP_IGNORE_TABLES=
+
 ####
 ## Выполняет команду с локальным СУБД MySQL.
 ##
-run-mysql-local = mysql --user=$(LOCAL_DB_USER) --password=$(LOCAL_DB_PASSWORD) $(1)
+## @param $1 Команда с параметрами.
+##
+run-mysql-local = mysql --user=$(LOCAL_DB_USER) --password=$(LOCAL_DB_PASSWORD) \
+	--host=$(LOCAL_DB_HOST) $(1)
 
 ####
 ## Выполняет mysqldump на удалённом сервере.
@@ -51,7 +58,9 @@ run-mysql-local = mysql --user=$(LOCAL_DB_USER) --password=$(LOCAL_DB_PASSWORD) 
 ## @param $1 Имя базы данных.
 ##
 run-mysqldump-remote = mysqldump --no-defaults --host=$(REMOTE_DB_HOST) --user=$(REMOTE_DB_USER) \
-	--password=$(REMOTE_DB_PASSWORD) $(MYSQLDUMP_OPTIONS) $(1)
+	--password=$(REMOTE_DB_PASSWORD) $(MYSQLDUMP_OPTIONS) \
+	$(foreach table,$(MYSQLDUMP_IGNORE_TABLES),--ignore-table=$(1).$(table)) \
+	$(1)
 
 ##
 ## Сохраняет дамп БД в файл.
@@ -66,9 +75,9 @@ ifeq ($(REMOTE_PROTO),ftp)
 		$(REMOTE_HTTP_ROOT)/mysqldump.php > $(DB_DUMP_FILE)
 	-$(call run-ftp,DELE $(REMOTE_ROOT)/mysqldump.php)
 else
-	$(call run-ssh,$(run-mysqldump-remote) $(REMOTE_DB_NAME) | xz > /tmp/$(REMOTE_DB_NAME).sql.xz)
+	$(call run-ssh,$(call run-mysqldump-remote,$(REMOTE_DB_NAME)) | xz > /tmp/$(REMOTE_DB_NAME).sql.xz)
 	-rm $(DB_DUMP_FILE).xz
-	scp $(REMOTE_USER)@$(REMOTE_HOST):/tmp/$(REMOTE_DB_NAME).sql.xz $(DB_DUMP_FILE).xz
+	$(call run-scp-from,/tmp/$(REMOTE_DB_NAME).sql.xz,$(DB_DUMP_FILE).xz)
 	-rm $(DB_DUMP_FILE)
 	xz -d $(DB_DUMP_FILE).xz
 endif
@@ -85,6 +94,7 @@ endif
 ##
 .PHONY: db-load
 db-load: ## Загружает дамп из файла БД.
+ifdef REMOTE
 	$(assert-required-remote-variables)
 ifeq ($(REMOTE),prod)
 	$(error Запись в боевую базу данных запрещена!)
@@ -99,7 +109,10 @@ else
 		'xzcat /tmp/$(shell basename $(DB_DUMP_FILE)).xz | mysql --host=$(REMOTE_DB_HOST) --user=$(REMOTE_DB_USER) --password=$(REMOTE_DB_PASSWORD) $(REMOTE_DB_NAME)'
 	-rm $(DB_DUMP_FILE).xz
 endif
-
+else
+	$(call assert-variable-set,LOCAL_DB_NAME,имя локальной БД)
+	$(call run-mysql-local,$(LOCAL_DB_NAME) < $(DB_DUMP_FILE))
+endif
 ##
 ## Импортирует БД с удалённого сервера на локальный.
 ##

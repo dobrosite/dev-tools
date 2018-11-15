@@ -11,9 +11,17 @@
 Задаёт имя файла дампа БД. По умолчанию `db/database.sql`. Используется целями `db-dump` и
 `db-load`.
 
+### LOCAL_DB_HOST
+
+Хост для подключения к локальной БД. По умолчанию `localhost`. 
+
 ### LOCAL_DB_NAME
 
 Имя локальной БД. Должна задаваться в командной строке при вызове make. 
+
+### MYSQLDUMP_IGNORE_TABLES
+
+Таблицы, которые надо пропустить при создании дампа (через пробел).
 
 ### MYSQLDUMP_OPTIONS
 
@@ -63,3 +71,21 @@ test_db_password = 123456789
 
     make REMOTE=test LOCAL_DB_NAME=example db-import
 
+### db-load
+
+Загружает дамп БД из файла, заданного переменной [DB_DUMP_FILE](#DB_DUMP_FILE).
+
+#### Загрузка в локальную БД
+
+Если не задана переменная [REMOTE](remote.md#REMOTE), то дамп будет загружен в локальную БД. В этом
+случае обязательно должна быть задана переменная [LOCAL_DB_NAME](#LOCAL_DB_NAME).
+
+Пример вызова:
+
+    make db-load LOCAL_DB_NAME=example
+
+#### Загрузка в удалённую БД
+
+Пример вызова:
+
+    make db-load REMOTE=test

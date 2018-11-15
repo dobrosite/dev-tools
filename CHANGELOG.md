@@ -5,6 +5,25 @@
 
 ## Не выпущено
 
+
+## 1.6.0 — 15.11.2018
+
+### Исправлено
+
+- В функции [run-ssh](docs/make/remote.md#run-ssh) не работала авторизация по паролю. 
+
+### Добавлено
+
+- Функция [run-scp-from](docs/make/remote.md#run-scp-from) — копирование с удалённого сервера.
+- Переменная [LOCAL_DB_HOST](docs/make/db.md#local_db_host) — хост локальной БД.
+- Переменная [MYSQLDUMP_IGNORE_TABLES](docs/make/db.md#mysqldump_ignore_tables) — таблицы, которые
+  надо пропустить при создании дампов.
+
+### Изменено
+
+- Цель [db-load](docs/make/db.md#db-load) теперь может загружать дампы в локальную БД.
+
+
 ## 1.5.0 — 06.09.2018
 
 ### Добавлено
